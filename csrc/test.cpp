@@ -57,7 +57,14 @@ int check(WB_info stu, WB_info ref) {
 
 int main(int argc, char** argv, char** env) {
 	top = new TESTBENCH<VminiLA_SoC>;
-    char dir[] = "waveform/";
+    char dir[1024] = "waveform/";
+    if(argc < 2 || strlen(argv[1]) > 1000) {
+
+        printf("Bad waveform dest path.");
+
+        exit(-1);
+
+    }
 	top -> opentrace(strcat(dir, strcat(argv[1], ".vcd")));
     init_cpu(STR_MACRO(PATH));
 	top_module = top -> dut;
