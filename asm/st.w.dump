@@ -1,0 +1,381 @@
+00000000 <_start>:
+   0: 50000400            b   0x4 <reset_vector>
+
+00000004 <reset_vector>:
+   4: 14000041            lu12i.w r1,0x2
+   8: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+   c: 14015402            lu12i.w r2,0xaa0
+  10: 0282a842            addi.w  r2,r2,170 # aa00aa <_end+0xa9e07a>
+  14: 29800022            st.w    r2,r1,0
+  18: 2880002e            ld.w    r14,r1,0
+  1c: 14015407            lu12i.w r7,0xaa0
+  20: 0282a8e7            addi.w  r7,r7,170 # aa00aa <_end+0xa9e07a>
+  24: 02800803            addi.w  r3,r0,2
+  28: 5c0461c7            bne r14,r7,0x488 <fail>
+  
+0000002c <test_3>:
+  2c: 14000041            lu12i.w r1,0x2
+  30: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+  34: 15540162            lu12i.w r2,0xaa00b
+  38: 02a80042            addi.w  r2,r2,-1536 # aa00aa00 <_end+0xaa0089d0>
+  3c: 29801022            st.w    r2,r1,4
+  40: 2880102e            ld.w    r14,r1,4
+  44: 15540167            lu12i.w r7,0xaa00b
+  48: 02a800e7            addi.w  r7,r7,-1536 # aa00aa00 <_end+0xaa0089d0>
+  4c: 02800c03            addi.w  r3,r0,3
+  50: 5c0439c7            bne r14,r7,0x488 <fail>
+  
+00000054 <test_4>:
+  54: 14000041            lu12i.w r1,0x2
+  58: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+  5c: 14154022            lu12i.w r2,0xaa01
+  60: 02aa8042            addi.w  r2,r2,-1376 # aa00aa0 <_end+0xa9fea70>
+  64: 29802022            st.w    r2,r1,8
+  68: 2880202e            ld.w    r14,r1,8
+  6c: 14154027            lu12i.w r7,0xaa01
+  70: 02aa80e7            addi.w  r7,r7,-1376 # aa00aa0 <_end+0xa9fea70>
+  74: 02801003            addi.w  r3,r0,4
+  78: 5c0411c7            bne r14,r7,0x488 <fail>
+
+0000007c <test_5>:
+  7c: 14000041            lu12i.w r1,0x2
+  80: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+  84: 15401542            lu12i.w r2,0xa00aa
+  88: 02802842            addi.w  r2,r2,10 # a00aa00a <_end+0xa00a7fda>
+  8c: 29803022            st.w    r2,r1,12
+  90: 2880302e            ld.w    r14,r1,12
+  94: 15401547            lu12i.w r7,0xa00aa
+  98: 028028e7            addi.w  r7,r7,10 # a00aa00a <_end+0xa00a7fda>
+  9c: 02801403            addi.w  r3,r0,5
+  a0: 5c03e9c7            bne r14,r7,0x488 <fail>
+  
+000000a4 <test_6>:
+  a4: 14000041            lu12i.w r1,0x2
+  a8: 02807021            addi.w  r1,r1,28 # 201c <tdat8>
+  ac: 14015402            lu12i.w r2,0xaa0
+  b0: 0282a842            addi.w  r2,r2,170 # aa00aa <_end+0xa9e07a>
+  b4: 29bfd022            st.w    r2,r1,-12
+  b8: 28bfd02e            ld.w    r14,r1,-12
+  bc: 14015407            lu12i.w r7,0xaa0
+  c0: 0282a8e7            addi.w  r7,r7,170 # aa00aa <_end+0xa9e07a>
+  c4: 02801803            addi.w  r3,r0,6
+  c8: 5c03c1c7            bne r14,r7,0x488 <fail>
+  
+000000cc <test_7>:
+  cc: 14000041            lu12i.w r1,0x2
+  d0: 02807021            addi.w  r1,r1,28 # 201c <tdat8>
+  d4: 15540162            lu12i.w r2,0xaa00b
+  d8: 02a80042            addi.w  r2,r2,-1536 # aa00aa00 <_end+0xaa0089d0>
+  dc: 29bfe022            st.w    r2,r1,-8
+  e0: 28bfe02e            ld.w    r14,r1,-8
+  e4: 15540167            lu12i.w r7,0xaa00b
+  e8: 02a800e7            addi.w  r7,r7,-1536 # aa00aa00 <_end+0xaa0089d0>
+  ec: 02801c03            addi.w  r3,r0,7
+  f0: 5c0399c7            bne r14,r7,0x488 <fail>
+  
+000000f4 <test_8>:
+  f4: 14000041            lu12i.w r1,0x2
+  f8: 02807021            addi.w  r1,r1,28 # 201c <tdat8>
+  fc: 14154022            lu12i.w r2,0xaa01
+ 100: 02aa8042            addi.w  r2,r2,-1376 # aa00aa0 <_end+0xa9fea70>
+ 104: 29bff022            st.w    r2,r1,-4
+ 108: 28bff02e            ld.w    r14,r1,-4
+ 10c: 14154027            lu12i.w r7,0xaa01
+ 110: 02aa80e7            addi.w  r7,r7,-1376 # aa00aa0 <_end+0xa9fea70>
+ 114: 02802003            addi.w  r3,r0,8
+ 118: 5c0371c7            bne r14,r7,0x488 <fail>
+ 
+0000011c <test_9>:
+ 11c: 14000041            lu12i.w r1,0x2
+ 120: 02807021            addi.w  r1,r1,28 # 201c <tdat8>
+ 124: 15401542            lu12i.w r2,0xa00aa
+ 128: 02802842            addi.w  r2,r2,10 # a00aa00a <_end+0xa00a7fda>
+ 12c: 29800022            st.w    r2,r1,0
+ 130: 2880002e            ld.w    r14,r1,0
+ 134: 15401547            lu12i.w r7,0xa00aa
+ 138: 028028e7            addi.w  r7,r7,10 # a00aa00a <_end+0xa00a7fda>
+ 13c: 02802403            addi.w  r3,r0,9
+ 140: 5c0349c7            bne r14,r7,0x488 <fail>
+ 
+00000144 <test_10>:
+ 144: 14000041            lu12i.w r1,0x2
+ 148: 02808021            addi.w  r1,r1,32 # 2020 <tdat9>
+ 14c: 142468a2            lu12i.w r2,0x12345
+ 150: 0299e042            addi.w  r2,r2,1656 # 12345678 <_end+0x12343648>
+ 154: 02bf8024            addi.w  r4,r1,-32
+ 158: 29808082            st.w    r2,r4,32 # 20 <reset_vector+0x1c>
+ 15c: 28800025            ld.w    r5,r1,0
+ 160: 142468a7            lu12i.w r7,0x12345
+ 164: 0299e0e7            addi.w  r7,r7,1656 # 12345678 <_end+0x12343648>
+ 168: 02802803            addi.w  r3,r0,10
+ 16c: 5c031ca7            bne r5,r7,0x488 <fail>
+ 
+00000170 <test_11>:
+ 170: 14000041            lu12i.w r1,0x2
+ 174: 02808021            addi.w  r1,r1,32 # 2020 <tdat9>
+ 178: 14b04262            lu12i.w r2,0x58213
+ 17c: 02826042            addi.w  r2,r2,152 # 58213098 <_end+0x58211068>
+ 180: 02bff421            addi.w  r1,r1,-3
+ 184: 29801c22            st.w    r2,r1,7
+ 188: 14000044            lu12i.w r4,0x2
+ 18c: 02809084            addi.w  r4,r4,36 # 2024 <tdat10>
+ 190: 28800085            ld.w    r5,r4,0 # 0 <_start>
+ 194: 14b04267            lu12i.w r7,0x58213
+ 198: 028260e7            addi.w  r7,r7,152 # 58213098 <_end+0x58211068>
+ 19c: 02802c03            addi.w  r3,r0,11
+ 1a0: 5c02e8a7            bne r5,r7,0x488 <fail>
+ 
+000001a4 <test_12>:
+ 1a4: 02803003            addi.w  r3,r0,12
+ 1a8: 02800004            addi.w  r4,r0,0
+ 1ac: 155577a1            lu12i.w r1,0xaabbd
+ 1b0: 02b37421            addi.w  r1,r1,-803 # aabbccdd <_end+0xaabbacad>
+ 1b4: 14000042            lu12i.w r2,0x2
+ 1b8: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 1bc: 29800041            st.w    r1,r2,0
+ 1c0: 2880004e            ld.w    r14,r2,0
+ 1c4: 155577a7            lu12i.w r7,0xaabbd
+ 1c8: 02b374e7            addi.w  r7,r7,-803 # aabbccdd <_end+0xaabbacad>
+ 1cc: 5c02bdc7            bne r14,r7,0x488 <fail>
+ 1d0: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 1d4: 02800805            addi.w  r5,r0,2
+ 1d8: 5fffd485            bne r4,r5,0x1ac <test_12+0x8>
+ 
+000001dc <test_13>:
+ 1dc: 02803403            addi.w  r3,r0,13
+ 1e0: 02800004            addi.w  r4,r0,0
+ 1e4: 15b55781            lu12i.w r1,0xdaabc
+ 1e8: 02b33421            addi.w  r1,r1,-819 # daabbccd <_end+0xdaab9c9d>
+ 1ec: 14000042            lu12i.w r2,0x2
+ 1f0: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 1f4: 02800000            addi.w  r0,r0,0
+ 1f8: 29801041            st.w    r1,r2,4
+ 1fc: 2880104e            ld.w    r14,r2,4
+ 200: 15b55787            lu12i.w r7,0xdaabc
+ 204: 02b334e7            addi.w  r7,r7,-819 # daabbccd <_end+0xdaab9c9d>
+ 208: 5c0281c7            bne r14,r7,0x488 <fail>
+ 20c: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 210: 02800805            addi.w  r5,r0,2
+ 214: 5fffd085            bne r4,r5,0x1e4 <test_13+0x8>
+ 
+00000218 <test_14>:
+ 218: 02803803            addi.w  r3,r0,14
+ 21c: 02800004            addi.w  r4,r0,0
+ 220: 15bb5581            lu12i.w r1,0xddaac
+ 224: 02af3021            addi.w  r1,r1,-1076 # ddaabbcc <_end+0xddaa9b9c>
+ 228: 14000042            lu12i.w r2,0x2
+ 22c: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 230: 02800000            addi.w  r0,r0,0
+ 234: 02800000            addi.w  r0,r0,0
+ 238: 29802041            st.w    r1,r2,8
+ 23c: 2880204e            ld.w    r14,r2,8
+ 240: 15bb5587            lu12i.w r7,0xddaac
+ 244: 02af30e7            addi.w  r7,r7,-1076 # ddaabbcc <_end+0xddaa9b9c>
+ 248: 5c0241c7            bne r14,r7,0x488 <fail>
+ 24c: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 250: 02800805            addi.w  r5,r0,2
+ 254: 5fffcc85            bne r4,r5,0x220 <test_14+0x8>
+ 
+00000258 <test_15>:
+ 258: 02803c03            addi.w  r3,r0,15
+ 25c: 02800004            addi.w  r4,r0,0
+ 260: 159bb561            lu12i.w r1,0xcddab
+ 264: 02aef021            addi.w  r1,r1,-1092 # cddaabbc <_end+0xcdda8b8c>
+ 268: 02800000            addi.w  r0,r0,0
+ 26c: 14000042            lu12i.w r2,0x2
+ 270: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 274: 29803041            st.w    r1,r2,12
+ 278: 2880304e            ld.w    r14,r2,12
+ 27c: 159bb567            lu12i.w r7,0xcddab
+ 280: 02aef0e7            addi.w  r7,r7,-1092 # cddaabbc <_end+0xcdda8b8c>
+ 284: 5c0205c7            bne r14,r7,0x488 <fail>
+ 288: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 28c: 02800805            addi.w  r5,r0,2
+ 290: 5fffd085            bne r4,r5,0x260 <test_15+0x8>
+ 
+00000294 <test_16>:
+ 294: 02804003            addi.w  r3,r0,16
+ 298: 02800004            addi.w  r4,r0,0
+ 29c: 1599bb61            lu12i.w r1,0xccddb
+ 2a0: 02aaec21            addi.w  r1,r1,-1349 # ccddaabb <_end+0xccdd8a8b>
+ 2a4: 02800000            addi.w  r0,r0,0
+ 2a8: 14000042            lu12i.w r2,0x2
+ 2ac: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 2b0: 02800000            addi.w  r0,r0,0
+ 2b4: 29804041            st.w    r1,r2,16
+ 2b8: 2880404e            ld.w    r14,r2,16
+ 2bc: 1599bb67            lu12i.w r7,0xccddb
+ 2c0: 02aaece7            addi.w  r7,r7,-1349 # ccddaabb <_end+0xccdd8a8b>
+ 2c4: 5c01c5c7            bne r14,r7,0x488 <fail>
+ 2c8: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 2cc: 02800805            addi.w  r5,r0,2
+ 2d0: 5fffcc85            bne r4,r5,0x29c <test_16+0x8>
+ 
+000002d4 <test_17>:
+ 2d4: 02804403            addi.w  r3,r0,17
+ 2d8: 02800004            addi.w  r4,r0,0
+ 2dc: 15799bc1            lu12i.w r1,0xbccde
+ 2e0: 02aaac21            addi.w  r1,r1,-1365 # bccddaab <_end+0xbccdba7b>
+ 2e4: 02800000            addi.w  r0,r0,0
+ 2e8: 02800000            addi.w  r0,r0,0
+ 2ec: 14000042            lu12i.w r2,0x2
+ 2f0: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 2f4: 29805041            st.w    r1,r2,20
+ 2f8: 2880504e            ld.w    r14,r2,20
+ 2fc: 15799bc7            lu12i.w r7,0xbccde
+ 300: 02aaace7            addi.w  r7,r7,-1365 # bccddaab <_end+0xbccdba7b>
+ 304: 5c0185c7            bne r14,r7,0x488 <fail>
+ 308: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 30c: 02800805            addi.w  r5,r0,2
+ 310: 5fffcc85            bne r4,r5,0x2dc <test_17+0x8>
+ 
+00000314 <test_18>:
+ 314: 02804803            addi.w  r3,r0,18
+ 318: 02800004            addi.w  r4,r0,0
+ 31c: 14000042            lu12i.w r2,0x2
+ 320: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 324: 14002241            lu12i.w r1,0x112
+ 328: 0288cc21            addi.w  r1,r1,563 # 112233 <_end+0x110203>
+ 32c: 29800041            st.w    r1,r2,0
+ 330: 2880004e            ld.w    r14,r2,0
+ 334: 14002247            lu12i.w r7,0x112
+ 338: 0288cce7            addi.w  r7,r7,563 # 112233 <_end+0x110203>
+ 33c: 5c014dc7            bne r14,r7,0x488 <fail>
+ 340: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 344: 02800805            addi.w  r5,r0,2
+ 348: 5fffd485            bne r4,r5,0x31c <test_18+0x8>
+ 
+0000034c <test_19>:
+ 34c: 02804c03            addi.w  r3,r0,19
+ 350: 02800004            addi.w  r4,r0,0
+ 354: 14000042            lu12i.w r2,0x2
+ 358: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 35c: 14600221            lu12i.w r1,0x30011
+ 360: 02888c21            addi.w  r1,r1,547 # 30011223 <_end+0x3000f1f3>
+ 364: 02800000            addi.w  r0,r0,0
+ 368: 29801041            st.w    r1,r2,4
+ 36c: 2880104e            ld.w    r14,r2,4
+ 370: 14600227            lu12i.w r7,0x30011
+ 374: 02888ce7            addi.w  r7,r7,547 # 30011223 <_end+0x3000f1f3>
+ 378: 5c0111c7            bne r14,r7,0x488 <fail>
+ 37c: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 380: 02800805            addi.w  r5,r0,2
+ 384: 5fffd085            bne r4,r5,0x354 <test_19+0x8>
+ 
+00000388 <test_20>:
+ 388: 02805003            addi.w  r3,r0,20
+ 38c: 02800004            addi.w  r4,r0,0
+ 390: 14000042            lu12i.w r2,0x2
+ 394: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 398: 14660021            lu12i.w r1,0x33001
+ 39c: 02848821            addi.w  r1,r1,290 # 33001122 <_end+0x32fff0f2>
+ 3a0: 02800000            addi.w  r0,r0,0
+ 3a4: 02800000            addi.w  r0,r0,0
+ 3a8: 29802041            st.w    r1,r2,8
+ 3ac: 2880204e            ld.w    r14,r2,8
+ 3b0: 14660027            lu12i.w r7,0x33001
+ 3b4: 028488e7            addi.w  r7,r7,290 # 33001122 <_end+0x32fff0f2>
+ 3b8: 5c00d1c7            bne r14,r7,0x488 <fail>
+ 3bc: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 3c0: 02800805            addi.w  r5,r0,2
+ 3c4: 5fffcc85            bne r4,r5,0x390 <test_20+0x8>
+ 
+000003c8 <test_21>:
+ 3c8: 02805403            addi.w  r3,r0,21
+ 3cc: 02800004            addi.w  r4,r0,0
+ 3d0: 14000042            lu12i.w r2,0x2
+ 3d4: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 3d8: 02800000            addi.w  r0,r0,0
+ 3dc: 14466001            lu12i.w r1,0x23300
+ 3e0: 02844821            addi.w  r1,r1,274 # 23300112 <_end+0x232fe0e2>
+ 3e4: 29803041            st.w    r1,r2,12
+ 3e8: 2880304e            ld.w    r14,r2,12
+ 3ec: 14466007            lu12i.w r7,0x23300
+ 3f0: 028448e7            addi.w  r7,r7,274 # 23300112 <_end+0x232fe0e2>
+ 3f4: 5c0095c7            bne r14,r7,0x488 <fail>
+ 3f8: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 3fc: 02800805            addi.w  r5,r0,2
+ 400: 5fffd085            bne r4,r5,0x3d0 <test_21+0x8>
+ 
+00000404 <test_22>:
+ 404: 02805803            addi.w  r3,r0,22
+ 408: 02800004            addi.w  r4,r0,0
+ 40c: 14000042            lu12i.w r2,0x2
+ 410: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 414: 02800000            addi.w  r0,r0,0
+ 418: 14446601            lu12i.w r1,0x22330
+ 41c: 02804421            addi.w  r1,r1,17 # 22330011 <_end+0x2232dfe1>
+ 420: 02800000            addi.w  r0,r0,0
+ 424: 29804041            st.w    r1,r2,16
+ 428: 2880404e            ld.w    r14,r2,16
+ 42c: 14446607            lu12i.w r7,0x22330
+ 430: 028044e7            addi.w  r7,r7,17 # 22330011 <_end+0x2232dfe1>
+ 434: 5c0055c7            bne r14,r7,0x488 <fail>
+ 438: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 43c: 02800805            addi.w  r5,r0,2
+ 440: 5fffcc85            bne r4,r5,0x40c <test_22+0x8>
+ 
+00000444 <test_23>:
+ 444: 02805c03            addi.w  r3,r0,23
+ 448: 02800004            addi.w  r4,r0,0
+ 44c: 14000042            lu12i.w r2,0x2
+ 450: 02800042            addi.w  r2,r2,0 # 2000 <begin_signature>
+ 454: 02800000            addi.w  r0,r0,0
+ 458: 02800000            addi.w  r0,r0,0
+ 45c: 14244661            lu12i.w r1,0x12233
+ 460: 02800421            addi.w  r1,r1,1 # 12233001 <_end+0x12230fd1>
+ 464: 29805041            st.w    r1,r2,20
+ 468: 2880504e            ld.w    r14,r2,20
+ 46c: 14244667            lu12i.w r7,0x12233
+ 470: 028004e7            addi.w  r7,r7,1 # 12233001 <_end+0x12230fd1>
+ 474: 5c0015c7            bne r14,r7,0x488 <fail>
+ 478: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 47c: 02800805            addi.w  r5,r0,2
+ 480: 5fffcc85            bne r4,r5,0x44c <test_23+0x8>
+ 484: 5c001c03            bne r0,r3,0x4a0 <pass>
+ 
+00000488 <fail>:
+ 488: 58000060            beq r3,r0,0x488 <fail>
+ 48c: 00408463            slli.w  r3,r3,1
+ 490: 03800463            ori     r3,r3,0x1
+ 494: 02817411            addi.w  r17,r0,93
+ 498: 0280006a            addi.w  r10,r3,0
+ 49c: 002b0000            syscall 0x0
+ 
+000004a0 <pass>:
+ 4a0: 02800403            addi.w  r3,r0,1
+ 4a4: 02817411            addi.w  r17,r0,93
+ 4a8: 0280000a            addi.w  r10,r0,0
+ 4ac: 002b0000            syscall 0x0
+
+Disassembly of section .data:
+
+00002000 <begin_signature>:
+    2000:	                0xdeadbeef
+
+00002004 <tdat2>:
+    2004:	                0xdeadbeef
+
+00002008 <tdat3>:
+    2008:	                0xdeadbeef
+
+0000200c <tdat4>:
+    200c:	                0xdeadbeef
+
+00002010 <tdat5>:
+    2010:	                0xdeadbeef
+
+00002014 <tdat6>:
+    2014:	                0xdeadbeef
+
+00002018 <tdat7>:
+    2018:	                0xdeadbeef
+
+0000201c <tdat8>:
+    201c:	                0xdeadbeef
+
+00002020 <tdat9>:
+    2020:	                0xdeadbeef
+
+00002024 <tdat10>:
+    2024:	                0xdeadbeef

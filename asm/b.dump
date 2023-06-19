@@ -1,0 +1,46 @@
+00000000 <_start>:
+   0: 50000400            b   0x4 <reset_vector>
+
+00000004 <reset_vector>:
+   4: 02800803            addi.w  r3,r0,2
+   8: 02800001            addi.w  r1,r0,0
+   c: 1c000004            pcaddu12i r4,0x0
+  10: 02801084            addi.w  r4,r4,4
+  14: 50001000            b   0x24 <target_2>
+
+00000018 <linkaddr_2>:
+  18: 02800000            addi.w  r0,r0,0
+  1c: 02800000            addi.w  r0,r0,0
+  20: 50003c00            b   0x5c <fail>
+
+00000024 <target_2>:
+  24: 02804002            addi.w  r2,r0,16
+  28: 5c003444            bne r2,r4,0x5c <fail>
+
+0000002c <test_3>:
+  2c: 02800401            addi.w  r1,r0,1
+  30: 50001400            b   0x44 <test_3+0x18>
+  34: 02800421            addi.w  r1,r1,1
+  38: 02800421            addi.w  r1,r1,1
+  3c: 02800421            addi.w  r1,r1,1
+  40: 02800421            addi.w  r1,r1,1
+  44: 02800421            addi.w  r1,r1,1
+  48: 02800421            addi.w  r1,r1,1
+  4c: 02800c07            addi.w  r7,r0,3
+  50: 02800c03            addi.w  r3,r0,3
+  54: 5c000827            bne r1,r7,0x5c <fail>
+  58: 5c001c03            bne r0,r3,0x74 <pass>
+
+0000005c <fail>:
+  5c: 58000060            beq r3,r0,0x5c <fail>
+  60: 00408463            slli.w  r3,r3,1
+  64: 03800463            ori     r3,r3,0x1
+  68: 02817411            addi.w  r17,r0,93
+  6c: 0280006a            addi.w  r10,r3,0
+  70: 002b0000            syscall 0x0
+
+00000074 <pass>:
+  74: 02800403            addi.w  r3,r0,1
+  78: 02817411            addi.w  r17,r0,93
+  7c: 0280000a            addi.w  r10,r0,0
+  80: 002b0000            syscall 0x0

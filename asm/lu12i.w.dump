@@ -1,0 +1,50 @@
+00000000 <_start>:
+   0: 50000400            b   0x4 <reset_vector>
+
+00000004 <reset_vector>:
+   4: 14000001            lu12i.w r1,0x0
+   8: 02800007            addi.w  r7,r0,0
+   c: 02800803            addi.w  r3,r0,2
+  10: 5c005427            bne r1,r7,0x64 <fail>
+
+00000014 <test_3>:
+  14: 15ffffe1            lu12i.w r1,0xfffff
+  18: 00488421            srai.w  r1,r1,1
+  1c: 02a00007            addi.w  r7,r0,-2048
+  20: 02800c03            addi.w  r3,r0,3
+  24: 5c004027            bne r1,r7,0x64 <fail>
+
+00000028 <test_4>:
+  28: 14ffffe1            lu12i.w r1,0x7ffff
+  2c: 0048d021            srai.w  r1,r1,20
+  30: 029ffc07            addi.w  r7,r0,2047
+  34: 02801003            addi.w  r3,r0,4
+  38: 5c002c27            bne r1,r7,0x64 <fail>
+
+0000003c <test_5>:
+  3c: 15000001            lu12i.w r1,0x80000
+  40: 0048d021            srai.w  r1,r1,20
+  44: 02a00007            addi.w  r7,r0,-2048
+  48: 02801403            addi.w  r3,r0,5
+  4c: 5c001827            bne r1,r7,0x64 <fail>
+
+00000050 <test_6>:
+  50: 15000000            lu12i.w r0,0x80000
+  54: 02800007            addi.w  r7,r0,0
+  58: 02801803            addi.w  r3,r0,6
+  5c: 5c000807            bne r0,r7,0x64 <fail>
+  60: 5c001c03            bne r0,r3,0x7c <pass>
+
+00000064 <fail>:
+  64: 58000060            beq r3,r0,0x64 <fail>
+  68: 00408463            slli.w  r3,r3,1
+  6c: 03800463            ori     r3,r3,0x1
+  70: 02817411            addi.w  r17,r0,93
+  74: 0280006a            addi.w  r10,r3,0
+  78: 002b0000            syscall 0x0
+
+0000007c <pass>:
+  7c: 02800403            addi.w  r3,r0,1
+  80: 02817411            addi.w  r17,r0,93
+  84: 0280000a            addi.w  r10,r0,0
+  88: 002b0000            syscall 0x0

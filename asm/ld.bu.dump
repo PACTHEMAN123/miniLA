@@ -1,0 +1,217 @@
+00000000 <_start>:
+   0: 50000400            b   0x4 <reset_vector>
+
+00000004 <reset_vector>:
+   4: 14000041            lu12i.w r1,0x2
+   8: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+   c: 2a00002e            ld.bu   r14,r1,0
+  10: 0283fc07            addi.w  r7,r0,255
+  14: 02800803            addi.w  r3,r0,2
+  18: 5c0249c7            bne r14,r7,0x260 <fail>
+
+0000001c <test_3>:
+  1c: 14000041            lu12i.w r1,0x2
+  20: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+  24: 2a00042e            ld.bu   r14,r1,1
+  28: 02800007            addi.w  r7,r0,0
+  2c: 02800c03            addi.w  r3,r0,3
+  30: 5c0231c7            bne r14,r7,0x260 <fail>
+
+00000034 <test_4>:
+  34: 14000041            lu12i.w r1,0x2
+  38: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+  3c: 2a00082e            ld.bu   r14,r1,2
+  40: 0283c007            addi.w  r7,r0,240
+  44: 02801003            addi.w  r3,r0,4
+  48: 5c0219c7            bne r14,r7,0x260 <fail>
+
+0000004c <test_5>:
+  4c: 14000041            lu12i.w r1,0x2
+  50: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+  54: 2a000c2e            ld.bu   r14,r1,3
+  58: 02803c07            addi.w  r7,r0,15
+  5c: 02801403            addi.w  r3,r0,5
+  60: 5c0201c7            bne r14,r7,0x260 <fail>
+
+00000064 <test_6>:
+  64: 14000041            lu12i.w r1,0x2
+  68: 02800c21            addi.w  r1,r1,3 # 2003 <tdat4>
+  6c: 2a3ff42e            ld.bu   r14,r1,-3
+  70: 0283fc07            addi.w  r7,r0,255
+  74: 02801803            addi.w  r3,r0,6
+  78: 5c01e9c7            bne r14,r7,0x260 <fail>
+
+0000007c <test_7>:
+  7c: 14000041            lu12i.w r1,0x2
+  80: 02800c21            addi.w  r1,r1,3 # 2003 <tdat4>
+  84: 2a3ff82e            ld.bu   r14,r1,-2
+  88: 02800007            addi.w  r7,r0,0
+  8c: 02801c03            addi.w  r3,r0,7
+  90: 5c01d1c7            bne r14,r7,0x260 <fail>
+
+00000094 <test_8>:
+  94: 14000041            lu12i.w r1,0x2
+  98: 02800c21            addi.w  r1,r1,3 # 2003 <tdat4>
+  9c: 2a3ffc2e            ld.bu   r14,r1,-1
+  a0: 0283c007            addi.w  r7,r0,240
+  a4: 02802003            addi.w  r3,r0,8
+  a8: 5c01b9c7            bne r14,r7,0x260 <fail>
+
+000000ac <test_9>:
+  ac: 14000041            lu12i.w r1,0x2
+  b0: 02800c21            addi.w  r1,r1,3 # 2003 <tdat4>
+  b4: 2a00002e            ld.bu   r14,r1,0
+  b8: 02803c07            addi.w  r7,r0,15
+  bc: 02802403            addi.w  r3,r0,9
+  c0: 5c01a1c7            bne r14,r7,0x260 <fail>
+
+000000c4 <test_10>:
+  c4: 1c000041            pcaddu12i r1,0x2
+  c8: 02800021            addi.w  r1,r1,0
+  cc: 02bcf021            addi.w  r1,r1,-196 # 2000 <begin_signature>
+  d0: 02bf8021            addi.w  r1,r1,-32
+  d4: 2a008025            ld.bu   r5,r1,32
+  d8: 0283fc07            addi.w  r7,r0,255
+  dc: 02802803            addi.w  r3,r0,10
+  e0: 5c0180a7            bne r5,r7,0x260 <fail>
+
+000000e4 <test_11>:
+  e4: 1c000041            pcaddu12i r1,0x2
+  e8: 02bff021            addi.w  r1,r1,-4
+  ec: 02bc8021            addi.w  r1,r1,-224 # 2000 <begin_signature>
+  f0: 02bfe821            addi.w  r1,r1,-6
+  f4: 2a001c25            ld.bu   r5,r1,7
+  f8: 02800007            addi.w  r7,r0,0
+  fc: 02802c03            addi.w  r3,r0,11
+ 100: 5c0160a7            bne r5,r7,0x260 <fail>
+
+00000104 <test_12>:
+ 104: 02803003            addi.w  r3,r0,12
+ 108: 02800004            addi.w  r4,r0,0
+ 10c: 14000041            lu12i.w r1,0x2
+ 110: 02800421            addi.w  r1,r1,1 # 2001 <tdat2>
+ 114: 2a00042e            ld.bu   r14,r1,1
+ 118: 028001c6            addi.w  r6,r14,0
+ 11c: 0283c007            addi.w  r7,r0,240
+ 120: 5c0140c7            bne r6,r7,0x260 <fail>
+ 124: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 128: 02800805            addi.w  r5,r0,2
+ 12c: 5fffe085            bne r4,r5,0x10c <test_12+0x8>
+
+00000130 <test_13>:
+ 130: 02803403            addi.w  r3,r0,13
+ 134: 02800004            addi.w  r4,r0,0
+ 138: 14000041            lu12i.w r1,0x2
+ 13c: 02800821            addi.w  r1,r1,2 # 2002 <tdat3>
+ 140: 2a00042e            ld.bu   r14,r1,1
+ 144: 02800000            addi.w  r0,r0,0
+ 148: 028001c6            addi.w  r6,r14,0
+ 14c: 02803c07            addi.w  r7,r0,15
+ 150: 5c0110c7            bne r6,r7,0x260 <fail>
+ 154: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 158: 02800805            addi.w  r5,r0,2
+ 15c: 5fffdc85            bne r4,r5,0x138 <test_13+0x8>
+
+00000160 <test_14>:
+ 160: 02803803            addi.w  r3,r0,14
+ 164: 02800004            addi.w  r4,r0,0
+ 168: 14000041            lu12i.w r1,0x2
+ 16c: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+ 170: 2a00042e            ld.bu   r14,r1,1
+ 174: 02800000            addi.w  r0,r0,0
+ 178: 02800000            addi.w  r0,r0,0
+ 17c: 028001c6            addi.w  r6,r14,0
+ 180: 02800007            addi.w  r7,r0,0
+ 184: 5c00dcc7            bne r6,r7,0x260 <fail>
+ 188: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 18c: 02800805            addi.w  r5,r0,2
+ 190: 5fffd885            bne r4,r5,0x168 <test_14+0x8>
+
+00000194 <test_15>:
+ 194: 02803c03            addi.w  r3,r0,15
+ 198: 02800004            addi.w  r4,r0,0
+ 19c: 14000041            lu12i.w r1,0x2
+ 1a0: 02800421            addi.w  r1,r1,1 # 2001 <tdat2>
+ 1a4: 2a00042e            ld.bu   r14,r1,1
+ 1a8: 0283c007            addi.w  r7,r0,240
+ 1ac: 5c00b5c7            bne r14,r7,0x260 <fail>
+ 1b0: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 1b4: 02800805            addi.w  r5,r0,2
+ 1b8: 5fffe485            bne r4,r5,0x19c <test_15+0x8>
+
+000001bc <test_16>:
+ 1bc: 02804003            addi.w  r3,r0,16
+ 1c0: 02800004            addi.w  r4,r0,0
+ 1c4: 14000041            lu12i.w r1,0x2
+ 1c8: 02800821            addi.w  r1,r1,2 # 2002 <tdat3>
+ 1cc: 02800000            addi.w  r0,r0,0
+ 1d0: 2a00042e            ld.bu   r14,r1,1
+ 1d4: 02803c07            addi.w  r7,r0,15
+ 1d8: 5c0089c7            bne r14,r7,0x260 <fail>
+ 1dc: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 1e0: 02800805            addi.w  r5,r0,2
+ 1e4: 5fffe085            bne r4,r5,0x1c4 <test_16+0x8>
+
+000001e8 <test_17>:
+ 1e8: 02804403            addi.w  r3,r0,17
+ 1ec: 02800004            addi.w  r4,r0,0
+ 1f0: 14000041            lu12i.w r1,0x2
+ 1f4: 02800021            addi.w  r1,r1,0 # 2000 <begin_signature>
+ 1f8: 02800000            addi.w  r0,r0,0
+ 1fc: 02800000            addi.w  r0,r0,0
+ 200: 2a00042e            ld.bu   r14,r1,1
+ 204: 02800007            addi.w  r7,r0,0
+ 208: 5c0059c7            bne r14,r7,0x260 <fail>
+ 20c: 02800484            addi.w  r4,r4,1 # 1 <_start+0x1>
+ 210: 02800805            addi.w  r5,r0,2
+ 214: 5fffdc85            bne r4,r5,0x1f0 <test_17+0x8>
+
+00000218 <test_18>:
+ 218: 1c000045            pcaddu12i r5,0x2
+ 21c: 02bfe0a5            addi.w  r5,r5,-8
+ 220: 02b7c0a5            addi.w  r5,r5,-528 # 2000 <begin_signature>
+ 224: 2a0000a2            ld.bu   r2,r5,0
+ 228: 02800802            addi.w  r2,r0,2
+ 22c: 02800807            addi.w  r7,r0,2
+ 230: 02804803            addi.w  r3,r0,18
+ 234: 5c002c47            bne r2,r7,0x260 <fail>
+
+00000238 <test_19>:
+ 238: 1c000045            pcaddu12i r5,0x2
+ 23c: 02bfd0a5            addi.w  r5,r5,-12
+ 240: 02b750a5            addi.w  r5,r5,-556 # 2000 <begin_signature>
+ 244: 2a0000a2            ld.bu   r2,r5,0
+ 248: 02800000            addi.w  r0,r0,0
+ 24c: 02800802            addi.w  r2,r0,2
+ 250: 02800807            addi.w  r7,r0,2
+ 254: 02804c03            addi.w  r3,r0,19
+ 258: 5c000847            bne r2,r7,0x260 <fail>
+ 25c: 5c001c03            bne r0,r3,0x278 <pass>
+
+00000260 <fail>:
+ 260: 58000060            beq r3,r0,0x260 <fail>
+ 264: 00408463            slli.w  r3,r3,1
+ 268: 03800463            ori     r3,r3,0x1
+ 26c: 02817411            addi.w  r17,r0,93
+ 270: 0280006a            addi.w  r10,r3,0
+ 274: 002b0000            syscall 0x0
+
+00000278 <pass>:
+ 278: 02800403            addi.w  r3,r0,1
+ 27c: 02817411            addi.w  r17,r0,93
+ 280: 0280000a            addi.w  r10,r0,0
+ 284: 002b0000            syscall 0x0
+
+Disassembly of section .data:
+
+00002000 <begin_signature>:
+    2000:	                0xff
+
+00002001 <tdat2>:
+    2001:	                0x00
+
+00002002 <tdat3>:
+    2002:	                0xf0
+
+00002003 <tdat4>:
+    2003:	                0x0f

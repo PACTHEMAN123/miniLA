@@ -1,0 +1,8 @@
+00000000 <_start>:
+   0: 50000400            b   0x4 <reset_vector>
+
+00000004 <reset_vector>:
+   4: 02800403            addi.w  r3,r0,1
+   8: 02817411            addi.w  r17,r0,93
+   c: 0280000a            addi.w  r10,r0,0
+  10: 002b0000            syscall 0x0
