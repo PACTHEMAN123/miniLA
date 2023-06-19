@@ -1,4 +1,4 @@
-VSRC = $(wildcard vsrc/* mySoC/*) 
+VSRC = $(wildcard vsrc/ram.v mySoC/*) 
 CSRC = $(wildcard golden_model/*.c) $(wildcard golden_model/stage/*.c) $(wildcard csrc/*.c csrc/*.cpp)
 SIM_OPTS = --trace -Wno-lint -Wno-style
 TEST = addi
