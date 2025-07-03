@@ -14,7 +14,12 @@ always @(posedge zext_rst or posedge zext_clk) begin
     if (zext_rst) begin
         zext_ext <= 0;
     end else begin
-        zext_ext <= {20'b0', inst};
+        zext_ext <= {20'b0, inst};
     end
 end
+
+
+endmodule
+
+
 
