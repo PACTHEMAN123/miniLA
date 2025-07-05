@@ -33,29 +33,26 @@ module ALU (
                 (alu_sel == ASEL_INST_20) ? {inst[24:5], 12'b0} :
                 (alu_sel == ASEL_SEXT1) ? sext1 :
                 (alu_sel == ASEL_ZEXT) ? zext :
-                {31'b0};
+                {32'b0};
 
-    assign C =  (ALU_ADD) ? A + B :
-                (ALU_SUB) ? A - B :
-                (ALU_OR) ? A | B :
-                (ALU_XOR) ? A ^ B :
-                (ALU_AND) ? A & B :
-                (ALU_SL) ? A << B[4:0] :
-                (ALU_SRL) ? A >> B[4:0] :
-                (ALU_SRA) ? A >>> B[4:0] :
-                {31'b0};
+    // calculate output
+    assign C =  (alu_op == ALU_ADD) ? A + B :
+                (alu_op == ALU_SUB) ? A - B :
+                (alu_op == ALU_OR) ? A | B :
+                (alu_op == ALU_XOR) ? A ^ B :
+                (alu_op == ALU_AND) ? A & B :
+                (alu_op == ALU_SL) ? A << B[4:0] :
+                (alu_op == ALU_SRL) ? A >> B[4:0] :
+                (alu_op == ALU_SRA) ? A >>> B[4:0] :
+                {32'b0};
 
-    assign f = 
-
-`define ALU_ADD         4'b0001
-`define ALU_SUB         4'b0010
-`define ALU_OR          4'b0011
-`define ALU_XOR         4'b0100
-`define ALU_SL          4'b0101
-`define ALU_SRL         4'b0110
-`define ALU_SRA         4'b0111
-`define ALU_SCMP        4'b1000
-`define ALU_UCMP        4'b1001
-
+    // compare output
+    assign f =  (alu_op == ALU_EQ) ? A == B :
+                (alu_op == ALU_NEQ) ? A != B :
+                (alu_op == ALU_LT_S) ? $signed(A) < $signed(B) :
+                (alu_op == ALU_LT_U) ? A < B :
+                (alu_op == ALU_GE_S) ? $signed(A) >= $signed(B) :
+                (alu_op == ALU_GE_U) ? A >= B :
+                {1'b0}
 
 endmodule

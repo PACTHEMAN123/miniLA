@@ -25,69 +25,55 @@ module RF (
     reg  [31:0]  register [0:31];
 
     // extract the inst
-    assign reg1 = inst[9:5];
-    assign reg2 = inst[14:10];
-    assign reg3 = inst[4:0];
-    
+    assign reg1 = inst[9:5];    // rj
+    assign reg2 = inst[14:10];  // rk
+    assign reg3 = inst[4:0];    // rd
+
+    // read operation is non-block
     // read out the register1
-    always @(posedge rf_rst or posedge rf_clk) begin
-        if (rf_rst) begin
-            rf_rD1 <= 0;
-        end else begin
-            rf_rD1 <= register[reg1];
-        end
-    end
+    assign rf_rD1 = register[reg1];
 
     // read out the register2
-    always @(posedge rf_rst or posedge rf_clk) begin
-        if (rf_rst) begin
-            rf_rD2 <= 0;
-        end else begin
-            if (rf_sel) begin
-                rf_rD2 <= register[reg2];
-            end else begin
-                rf_rD2 <= register[reg3];
-        end
-    end
+    assign rf_rD2 = (rf_sel == RD_RK) ? register[reg2] :
+                    (rf_sel == RD_RD) ? register[reg3] :
+                    1'b0;
 
+    // write operation is blocked
     // write the dst register
     always @(posedge rf_rst or posedge rf_clk) begin
         if (rf_rst) begin
             // TODO: do nothing?
         end else begin
-            // ALU.C
-            if (wD_sel == 1) begin
+            if (wD_sel == WD_ALU) begin
                 register[reg3] <= alu_c;
             end
 
-            // sext2
-            if (wD_sel == 2) begin
+            else if (wD_sel == WD_SEXT2) begin
                 register[reg3] <= sext2;
             end
 
-            // rdo[7:0]
-            if (wD_sel == 3) begin
+            else if (wD_sel == WD_DRAM_8) begin
                 register[reg3][7:0] <= rdo[7:0];
             end
 
-            // rdo[15:0]
-            if (wD_sel == 4) begin
+            else if (wD_sel == WD_DRAM_16) begin
                 register[reg3][15:0] <= rdo[15:0];
             end
 
-            // rdo[31:0]
-            if (wD_sel == 5) begin
+            else if (wD_sel == WD_DRAM_32) begin
                 register[reg3] <= rdo;
             end
 
-            // pc4
-            if (wD_sel == 6) begin
+            else if (wD_sel == WD_INST) begin
+                register[reg3] <= {inst[24:5], 12'b0};
+            end
+
+            else if (wD_sel == WD_PC4_RD) begin
                 register[reg3] <= pc4;
             end
 
-            // inst[24:5] | 12'b0
-            if (wD_sel == 7) begin
-                register[reg3] <= {inst[24:5], 12'b0};
+            else if (wD_sel == WD_PC4_R1) begin
+                register[1] <= pc4;
             end
         end
     end

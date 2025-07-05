@@ -2,8 +2,6 @@
 
 // NPC module
 module NPC (
-    input   wire          npc_rst,
-    input   wire          npc_clk,
     input   wire          br,
     input   wire  [31:0]  pc,
 
@@ -18,45 +16,12 @@ module NPC (
     output  wire  [31:0]  pc4
 );
 
-// pc4 = pc + 4
-always @(posedge npc_clk or posedge npc_rst) begin
-    if (npc_rst) begin
-        pc4 <= 0;
-    end else begin
-        pc4 <= pc + 4;
-    end
-end
+    // pc4 = pc + 4
+    assign pc4 = pc + 4;
 
-always @(posedge npc_clk or posedge npc_rst) begin
-    if (npc_rst) begin
-        // reset
-        npc <= 0;
-    end else begin
-        // npc = pc + 4
-        if (npc_op == 0) begin
-            npc <= pc + 4;
-        end
-
-        // npc = br ? (pc + sext) : (pc + 4)
-        else if (npc_op == 1) begin
-            if (br) begin
-                npc <= pc + sext;
-            end else begin
-                npc <= pc + 4;
-            end
-        end
-
-        // npc = pc + sext
-        else if (npc_op == 2) begin
-            npc <= pc + sext;
-        end
-
-        // npc = pc + alu_c
-        else begin
-            npc <= pc + alu_c;
-        end
-    end
-end
-
+    assign npc =    (npc_op == NPC_PC_4) ? pc + 4 :
+                    (npc_op == NPC_PC_OFF) ? pc + sext :
+                    (npc_op == NPC_PC_OFF_BR) ? (br ? pc + sext : pc + 4) :
+                    (npc_op == NPC_OFF) ? alu_c;
 
 endmodule
