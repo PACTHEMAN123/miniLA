@@ -6,7 +6,7 @@ module ALU (
     input wire [31:0] inst,
 
     // ALU operation
-    input wire alu_op,
+    input wire [3:0] alu_op,
 
     // possible A
     input wire [31:0] pc,
