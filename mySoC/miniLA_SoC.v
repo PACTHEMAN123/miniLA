@@ -87,7 +87,7 @@ module miniLA_SoC (
 `endif
     
     myCPU Core_cpu (
-        .cpu_rst            (!fpga_rstn),
+        .cpu_rst            (fpga_rst),
         .cpu_clk            (cpu_clk),
 
         // Interface to IROM

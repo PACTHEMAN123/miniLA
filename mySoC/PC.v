@@ -9,8 +9,12 @@ module PC (
     output  reg   [31:0]  pc
 );
 
-always @(posedge pc_clk) begin
-    pc <= din;
+always @(posedge pc_clk or pc_rst) begin
+    if (pc_rst) begin
+        pc <= 32'b0;
+    end else if (pc_clk) begin
+        pc <= din;
+    end
 end
 
 

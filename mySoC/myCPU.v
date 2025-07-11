@@ -174,9 +174,19 @@ module myCPU (
         have_inst <= 1'b1;
     end
 
-    assign debug_wb_have_inst = have_inst;
+    // the pc that is currently executing
+    reg [31:0] current_pc;
+    always @(posedge cpu_clk or posedge cpu_rst) begin
+        if (cpu_rst) begin
+            current_pc <= 0;
+        end else if (cpu_clk) begin
+            current_pc <= pc;
+        end
+    end
+
+    assign debug_wb_have_inst = hang ? 1'b0 : have_inst;
     // assign debug_wb_pc        = hang ? 32'b0: pc;
-    assign debug_wb_pc        = pc;
+    assign debug_wb_pc        = current_pc;
     assign debug_wb_ena       = 1'b0;
     assign debug_wb_reg       = wb_reg;
     assign debug_wb_value     = wb_value;
