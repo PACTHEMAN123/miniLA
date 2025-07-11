@@ -20,9 +20,14 @@ module Controller (
     output wire [2:0] sext1_op,
 
     // sext2 control signals
-    output wire sext2_sel
+    output wire sext2_sel,
 
-    // TODOS: debug interface
+    // dram control signals
+    output wire Bus_we,
+    output wire dram_sel,
+
+    // check if inst valid
+    output wire hang
 );
 
 
@@ -141,5 +146,21 @@ module Controller (
                         (JIRL) ? `WD_PC4_RD :
                         (BL) ? `WD_PC4_R1 :
                         3'b000;
+
+    assign Bus_we =     (STB | STH | STW) ? 1'b1 :
+                        1'b0;
+
+    assign dram_sel =   (LDB | LDBU | LDH | LDHU | LDW) ? `DRAM_R :
+                        (STB) ? `DRAM_W_8 :
+                        (STH) ? `DRAM_W_16 :
+                        (STW) ? `DRAM_W_32 :
+                        2'b00;
+
+    assign hang = !(ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
+                    | SLLIW | SRLIW | SRAIW
+                    | ADDIW | ANDI | ORI | XORI | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW
+                    | LU12IW | PCADDU | 
+                    | BEQ | BNE | BLT | BLTU | BGE | BGEU | JIRL
+                    | B | BL);
 
 endmodule

@@ -19,6 +19,12 @@ module RF (
 
     output  wire  [31:0]  rf_rD1,
     output  wire  [31:0]  rf_rD2
+
+`ifdef RUN_TRACE
+    ,// Debug Interface
+    output wire [ 4:0]  debug_wb_reg,
+    output wire [31:0]  debug_wb_value
+`endif
 );
 
     // the 32 32-bits registers
@@ -28,6 +34,8 @@ module RF (
     assign reg1 = inst[9:5];    // rj
     assign reg2 = inst[14:10];  // rk
     assign reg3 = inst[4:0];    // rd
+
+    
 
     // read operation is non-block
     // read out the register1
@@ -40,42 +48,31 @@ module RF (
 
     // write operation is blocked
     // write the dst register
+    assign wb_reg = (wD_sel != `WD_PC4_R1) ? reg3 :
+                    5'b00001;
+
+    assign wb_value =   (wD_sel == `WD_ALU) ? alu_c :
+                        (wD_sel == `WD_SEXT2) ? sext2 :
+                        (wD_sel == `WD_DRAM_8) ? {register[wb_reg][31:8], rdo[7:0]} :
+                        (wD_sel == `WD_DRAM_16) ? {register[wb_reg][31:16], rdo[15:0]} :
+                        (wD_sel == `WD_DRAM_32) ? rdo :
+                        (wD_sel == `WD_INST) ? {inst[24:5], 12'b0} :
+                        (wD_sel == `WD_PC4_RD) ? pc4 :
+                        (wD_sel == `WD_PC4_R1) ? pc4 :
+                        32'b0; 
+
+
     always @(posedge rf_rst or posedge rf_clk) begin
         if (rf_rst) begin
             // TODO: do nothing?
         end else begin
-            if (wD_sel == `WD_ALU) begin
-                register[reg3] <= alu_c;
-            end
-
-            else if (wD_sel == `WD_SEXT2) begin
-                register[reg3] <= sext2;
-            end
-
-            else if (wD_sel == `WD_DRAM_8) begin
-                register[reg3][7:0] <= rdo[7:0];
-            end
-
-            else if (wD_sel == `WD_DRAM_16) begin
-                register[reg3][15:0] <= rdo[15:0];
-            end
-
-            else if (wD_sel == `WD_DRAM_32) begin
-                register[reg3] <= rdo;
-            end
-
-            else if (wD_sel == `WD_INST) begin
-                register[reg3] <= {inst[24:5], 12'b0};
-            end
-
-            else if (wD_sel == `WD_PC4_RD) begin
-                register[reg3] <= pc4;
-            end
-
-            else if (wD_sel == `WD_PC4_R1) begin
-                register[1] <= pc4;
-            end
+            register[wb_reg] <= wb_value;
         end
     end
+
+`ifdef RUN_TRACE
+    assign debug_wb_reg = wb_reg;
+    assign debug_wb_value = wb_value;
+`endif
 
 endmodule

@@ -57,6 +57,12 @@
 `define SEXT2_8         1'b0
 `define SEXT2_16        1'b1
 
+// dram sels
+`define DRAM_R          2'b00
+`define DRAM_W_8        2'b01
+`define DRAM_W_16       2'b10
+`define DRAM_W_32       2'b11
+
 
 // 外设I/O接口电路的端口地址
 `define PERI_ADDR_DIG   32'hFFFF_F000

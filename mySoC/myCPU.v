@@ -38,6 +38,8 @@ module myCPU (
     wire [2:0]      wD_sel;
     wire [2:0]      sext1_op;
     wire            sext2_sel;
+    wire            we;
+    wire            hang;
 
     // ALU
     wire [31:0]     alu_c;
@@ -59,6 +61,16 @@ module myCPU (
     wire [31:0]     sext2_ext;
     wire [31:0]     zext_ext;
 
+    // Dram sel
+    wire [1:0]      dram_sel;
+    wire [31:0]     dram_addr;
+    wire [31:0]     dram_wdata;
+
+`ifdef RUN_TRACE
+    wire [4:0]      wb_reg;
+    wire [31:0]     wb_value;
+`endif
+
 
     PC myPC (
         .pc_rst     (cpu_rst),
@@ -67,12 +79,16 @@ module myCPU (
         .pc         (pc)
     );
 
+    assign inst_addr = pc[31:2];
+
     NPC myNPC (
         .br         (alu_f),
         .pc         (pc),
         .alu_c      (alu_c),
         .sext       (sext1_ext),
-        .npc_op     (npc_op)
+        .npc_op     (npc_op),
+        .npc        (npc),
+        .pc4        (pc4)
     );
 
     ALU myALU (
@@ -83,7 +99,9 @@ module myCPU (
         .rf_rD2     (rf_rD2),
         .sext1      (sext1_ext),
         .zext       (zext_ext),
-        .alu_sel    (alu_sel)
+        .alu_sel    (alu_sel),
+        .alu_c      (alu_c),
+        .alu_f      (alu_f)
     );
 
     RF myRF (
@@ -95,34 +113,73 @@ module myCPU (
         .alu_c      (alu_c),
         .sext2      (sext2_ext),
         .pc4        (pc4),
-        .rdo        (Bus_rdata)
+        .rdo        (Bus_rdata),
+        .rf_rD1     (rf_rD1),
+        .rf_rD2     (rf_rD2)
+
+`ifdef RUN_TRACE
+        ,
+        .debug_wb_reg (wb_reg),
+        .debug_wb_value (wb_value)
+`endif
     );
 
     SEXT1 mySEXT1 (
         .sext1_op   (sext1_op),
-        .inst       (inst)
+        .inst       (inst),
+        .sext1_ext  (sext1_ext)
     );
 
     SEXT2 mySEXT2 (
         .sext2_sel   (sext2_sel),
-        .rdo        (Bus_rdata)
+        .rdo        (Bus_rdata),
+        .sext2_ext  (sext2_ext)
     );
 
     ZEXT myZEXT (
-        .inst       (inst)
+        .inst       (inst),
+        .zext_ext   (zext_ext)
     );
 
     Controller myController (
-        .inst       (inst)
+        .inst       (inst),
+        .alu_op     (alu_op),
+        .alu_sel    (alu_sel),
+        .npc_op     (npc_op),
+        .rf_sel     (rf_sel),
+        .wD_sel     (wD_sel),
+        .sext1_op   (sext1_op),
+        .sext2_sel  (sext2_sel),
+        .Bus_we     (we),
+        .dram_sel   (dram_sel),
+        .hang       (hang)
     );
+
+    DramSel myDramSel (
+        .dram_sel   (dram_sel),
+        .alu_c      (alu_c),
+        .rf_rD2     (rf_rD2),
+        .dram_addr  (dram_addr),
+        .dram_wdata (dram_wdata)
+    );
+
+    assign Bus_addr = dram_addr;
+    assign Bus_we   = we;
+    assign Bus_wdata = dram_wdata;
 
 `ifdef RUN_TRACE
     // Debug Interface
-    assign debug_wb_have_inst = 1'b1;
+    reg have_inst;
+    always @(cpu_rst) begin
+        have_inst <= 1'b1;
+    end
+
+    assign debug_wb_have_inst = have_inst;
+    // assign debug_wb_pc        = hang ? 32'b0: pc;
     assign debug_wb_pc        = pc;
     assign debug_wb_ena       = 1'b0;
-    assign debug_wb_reg       = inst[4:0];
-    assign debug_wb_value     = 32'b0;
+    assign debug_wb_reg       = wb_reg;
+    assign debug_wb_value     = wb_value;
 `endif
 
 endmodule
