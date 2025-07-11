@@ -31,9 +31,9 @@ module RF (
     reg  [31:0]  register [0:31];
 
     // extract the inst
-    assign reg1 = inst[9:5];    // rj
-    assign reg2 = inst[14:10];  // rk
-    assign reg3 = inst[4:0];    // rd
+    wire [4:0] reg1 = inst[9:5];    // rj
+    wire [4:0] reg2 = inst[14:10];  // rk
+    wire [4:0] reg3 = inst[4:0];    // rd
 
     
 
@@ -48,10 +48,10 @@ module RF (
 
     // write operation is blocked
     // write the dst register
-    assign wb_reg = (wD_sel != `WD_PC4_R1) ? reg3 :
+    wire [4:0] wb_reg = (wD_sel != `WD_PC4_R1) ? reg3 :
                     5'b00001;
 
-    assign wb_value =   (wD_sel == `WD_ALU) ? alu_c :
+    wire [31:0] wb_value =   (wD_sel == `WD_ALU) ? alu_c :
                         (wD_sel == `WD_SEXT2) ? sext2 :
                         (wD_sel == `WD_DRAM_8) ? {register[wb_reg][31:8], rdo[7:0]} :
                         (wD_sel == `WD_DRAM_16) ? {register[wb_reg][31:16], rdo[15:0]} :

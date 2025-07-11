@@ -40,6 +40,7 @@ module myCPU (
     wire            sext2_sel;
     wire            we;
     wire            hang;
+    wire            wb_ena;
 
     // ALU
     wire [31:0]     alu_c;
@@ -116,7 +117,6 @@ module myCPU (
         .rdo        (Bus_rdata),
         .rf_rD1     (rf_rD1),
         .rf_rD2     (rf_rD2)
-
 `ifdef RUN_TRACE
         ,
         .debug_wb_reg (wb_reg),
@@ -151,8 +151,11 @@ module myCPU (
         .sext1_op   (sext1_op),
         .sext2_sel  (sext2_sel),
         .Bus_we     (we),
-        .dram_sel   (dram_sel),
-        .hang       (hang)
+        .dram_sel   (dram_sel)
+`ifdef RUN_TRACE
+        ,
+        .wb_ena     (wb_ena)   
+`endif
     );
 
     DramSel myDramSel (
@@ -176,20 +179,25 @@ module myCPU (
 
     // the pc that is currently executing
     reg [31:0] current_pc;
+    reg [4:0] current_wb_reg;
+    reg [31:0] current_wb_value;
+    reg         current_wb_ena;
     always @(posedge cpu_clk or posedge cpu_rst) begin
         if (cpu_rst) begin
             current_pc <= 0;
         end else if (cpu_clk) begin
             current_pc <= pc;
+            current_wb_reg <= wb_reg;
+            current_wb_value <= wb_value;
+            current_wb_ena  <= wb_ena;
         end
     end
 
-    assign debug_wb_have_inst = hang ? 1'b0 : have_inst;
-    // assign debug_wb_pc        = hang ? 32'b0: pc;
+    assign debug_wb_have_inst = have_inst;
     assign debug_wb_pc        = current_pc;
-    assign debug_wb_ena       = 1'b0;
-    assign debug_wb_reg       = wb_reg;
-    assign debug_wb_value     = wb_value;
+    assign debug_wb_ena       = current_wb_ena;
+    assign debug_wb_reg       = current_wb_reg;
+    assign debug_wb_value     = current_wb_value;
 `endif
 
 endmodule

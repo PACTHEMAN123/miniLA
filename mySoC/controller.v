@@ -26,8 +26,10 @@ module Controller (
     output wire Bus_we,
     output wire dram_sel,
 
-    // check if inst valid
-    output wire hang
+    // // check if inst valid
+    // output wire hang,
+
+    output wire wb_ena
 );
 
 
@@ -156,11 +158,12 @@ module Controller (
                         (STW) ? `DRAM_W_32 :
                         2'b00;
 
-    assign hang = !(ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
-                    | SLLIW | SRLIW | SRAIW
-                    | ADDIW | ANDI | ORI | XORI | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW
-                    | LU12IW | PCADDU | 
-                    | BEQ | BNE | BLT | BLTU | BGE | BGEU | JIRL
-                    | B | BL);
+    // assign hang = !(ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
+    //                 | SLLIW | SRLIW | SRAIW
+    //                 | ADDIW | ANDI | ORI | XORI | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW
+    //                 | LU12IW | PCADDU | 
+    //                 | BEQ | BNE | BLT | BLTU | BGE | BGEU | JIRL
+    //                 | B | BL);
 
+    assign wb_ena = !(STB | STH | STW | BEQ | BNE | BLT | BLTU | BGE | BGEU | B);
 endmodule
