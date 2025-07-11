@@ -3,7 +3,7 @@
 `include "defines.vh"
 
 module miniLA_SoC (
-    input  wire         fpga_rstn,   // Low active
+    input  wire         fpga_rst,   // Low active
     input  wire         fpga_clk,
 
     input  wire [15:0]  sw,

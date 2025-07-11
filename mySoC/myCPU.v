@@ -30,22 +30,99 @@ module myCPU (
 `endif
 );
 
-    // TODO: 完成你自己的单周期CPU设计
-    //
+    // controller
+    wire [3:0]      alu_op;
+    wire [2:0]      alu_sel;
+    wire [1:0]      npc_op;
+    wire            rf_sel;
+    wire [2:0]      wD_sel;
+    wire [2:0]      sext1_op;
+    wire            sext2_sel;
+
+    // ALU
+    wire [31:0]     alu_c;
+    wire            alu_f;
+
+    // RF
+    wire [31:0]     rf_rD1;
+    wire [31:0]     rf_rD2;
+
+    // NPC
+    wire [31:0]     npc;
+    wire [31:0]     pc4;
+
+    // PC
+    wire [31:0]     pc;
+
+    // EXT
+    wire [31:0]     sext1_ext;
+    wire [31:0]     sext2_ext;
+    wire [31:0]     zext_ext;
+
+
     PC myPC (
         .pc_rst     (cpu_rst),
         .pc_clk     (cpu_clk),
-        .din        (/*NPC*/),
-        .pc         (/**/), 
+        .din        (npc),
+        .pc         (pc)
+    );
+
+    NPC myNPC (
+        .br         (alu_f),
+        .pc         (pc),
+        .alu_c      (alu_c),
+        .sext       (sext1_ext),
+        .npc_op     (npc_op)
+    );
+
+    ALU myALU (
+        .inst       (inst),
+        .alu_op     (alu_op),
+        .pc         (pc),
+        .rf_rD1     (rf_rD1),
+        .rf_rD2     (rf_rD2),
+        .sext1      (sext1_ext),
+        .zext       (zext_ext),
+        .alu_sel    (alu_sel)
+    );
+
+    RF myRF (
+        .rf_rst     (cpu_rst),
+        .rf_clk     (cpu_clk),
+        .inst       (inst),
+        .rf_sel     (rf_sel),
+        .wD_sel     (wD_sel),
+        .alu_c      (alu_c),
+        .sext2      (sext2_ext),
+        .pc4        (pc4),
+        .rdo        (Bus_rdata)
+    );
+
+    SEXT1 mySEXT1 (
+        .sext1_op   (sext1_op),
+        .inst       (inst)
+    );
+
+    SEXT2 mySEXT2 (
+        .sext2_sel   (sext2_sel),
+        .rdo        (Bus_rdata)
+    );
+
+    ZEXT myZEXT (
+        .inst       (inst)
+    );
+
+    Controller myController (
+        .inst       (inst)
     );
 
 `ifdef RUN_TRACE
     // Debug Interface
-    assign debug_wb_have_inst = /* TODO */;
-    assign debug_wb_pc        = /* TODO */;
-    assign debug_wb_ena       = /* TODO */;
-    assign debug_wb_reg       = /* TODO */;
-    assign debug_wb_value     = /* TODO */;
+    assign debug_wb_have_inst = 1'b1;
+    assign debug_wb_pc        = pc;
+    assign debug_wb_ena       = 1'b0;
+    assign debug_wb_reg       = inst[4:0];
+    assign debug_wb_value     = 32'b0;
 `endif
 
 endmodule

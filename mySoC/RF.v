@@ -34,8 +34,8 @@ module RF (
     assign rf_rD1 = register[reg1];
 
     // read out the register2
-    assign rf_rD2 = (rf_sel == RD_RK) ? register[reg2] :
-                    (rf_sel == RD_RD) ? register[reg3] :
+    assign rf_rD2 = (rf_sel == `RD_RK) ? register[reg2] :
+                    (rf_sel == `RD_RD) ? register[reg3] :
                     1'b0;
 
     // write operation is blocked
@@ -44,35 +44,35 @@ module RF (
         if (rf_rst) begin
             // TODO: do nothing?
         end else begin
-            if (wD_sel == WD_ALU) begin
+            if (wD_sel == `WD_ALU) begin
                 register[reg3] <= alu_c;
             end
 
-            else if (wD_sel == WD_SEXT2) begin
+            else if (wD_sel == `WD_SEXT2) begin
                 register[reg3] <= sext2;
             end
 
-            else if (wD_sel == WD_DRAM_8) begin
+            else if (wD_sel == `WD_DRAM_8) begin
                 register[reg3][7:0] <= rdo[7:0];
             end
 
-            else if (wD_sel == WD_DRAM_16) begin
+            else if (wD_sel == `WD_DRAM_16) begin
                 register[reg3][15:0] <= rdo[15:0];
             end
 
-            else if (wD_sel == WD_DRAM_32) begin
+            else if (wD_sel == `WD_DRAM_32) begin
                 register[reg3] <= rdo;
             end
 
-            else if (wD_sel == WD_INST) begin
+            else if (wD_sel == `WD_INST) begin
                 register[reg3] <= {inst[24:5], 12'b0};
             end
 
-            else if (wD_sel == WD_PC4_RD) begin
+            else if (wD_sel == `WD_PC4_RD) begin
                 register[reg3] <= pc4;
             end
 
-            else if (wD_sel == WD_PC4_R1) begin
+            else if (wD_sel == `WD_PC4_R1) begin
                 register[1] <= pc4;
             end
         end
