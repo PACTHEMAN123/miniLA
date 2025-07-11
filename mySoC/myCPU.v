@@ -39,7 +39,6 @@ module myCPU (
     wire [2:0]      sext1_op;
     wire            sext2_sel;
     wire            we;
-    wire            hang;
     wire            wb_ena;
 
     // ALU
@@ -116,7 +115,8 @@ module myCPU (
         .pc4        (pc4),
         .rdo        (Bus_rdata),
         .rf_rD1     (rf_rD1),
-        .rf_rD2     (rf_rD2)
+        .rf_rD2     (rf_rD2),
+        .wb_ena     (wb_ena)
 `ifdef RUN_TRACE
         ,
         .debug_wb_reg (wb_reg),
@@ -151,11 +151,8 @@ module myCPU (
         .sext1_op   (sext1_op),
         .sext2_sel  (sext2_sel),
         .Bus_we     (we),
-        .dram_sel   (dram_sel)
-`ifdef RUN_TRACE
-        ,
-        .wb_ena     (wb_ena)   
-`endif
+        .dram_sel   (dram_sel),
+        .wb_ena     (wb_ena)
     );
 
     DramSel myDramSel (

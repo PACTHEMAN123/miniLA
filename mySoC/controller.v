@@ -104,7 +104,8 @@ module Controller (
                         (BGEU) ? `ALU_GE_U :
                         4'b0;
 
-    assign alu_sel =    (ADDW | SUBW | AND | OR | XOR | SLT | SLTU) ? `ASEL_RD2 :
+    assign alu_sel =    (ADDW | SUBW | AND | OR | XOR | SLT | SLTU
+                        | BEQ | BNE | BLT | BLTU | BGE | BGEU) ? `ASEL_RD2 :
                         (SLLW | SRLW | SRAW) ? `ASEL_RD2_5 : 
                         (SLLIW | SRLIW | SRAIW) ? `ASEL_INST_5 :
                         (PCADDU) ? `ASEL_INST_20 :

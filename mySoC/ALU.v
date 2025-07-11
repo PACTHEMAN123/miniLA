@@ -26,6 +26,7 @@ module ALU (
 
     // choose the input
     wire [31:0] A =  (alu_sel == `ASEL_INST_20) ? pc : rf_rD1;
+    
 
     wire [31:0] B =  (alu_sel == `ASEL_RD2) ? rf_rD2 :
                 (alu_sel == `ASEL_RD2_5) ? {27'b0, rf_rD2[4:0]} :
@@ -35,6 +36,10 @@ module ALU (
                 (alu_sel == `ASEL_ZEXT) ? zext :
                 {32'b0};
 
+    wire [31:0] shifted = A >> B[4:0];
+    wire [31:0] sign_mask = ~(32'hFFFFFFFF >> B[4:0]);
+    wire [31:0] sra = shifted | (A[31] ? sign_mask : 32'b0);
+
     // calculate output
     assign alu_c =  (alu_op == `ALU_ADD) ? A + B :
                 (alu_op == `ALU_SUB) ? A - B :
@@ -43,7 +48,13 @@ module ALU (
                 (alu_op == `ALU_AND) ? A & B :
                 (alu_op == `ALU_SL) ? A << B[4:0] :
                 (alu_op == `ALU_SRL) ? A >> B[4:0] :
-                (alu_op == `ALU_SRA) ? A >>> B[4:0] :
+                (alu_op == `ALU_SRA) ?  sra :
+                (alu_op == `ALU_EQ) ? A == B :
+                (alu_op == `ALU_NEQ) ? A != B :
+                (alu_op == `ALU_LT_S) ? $signed(A) < $signed(B) :
+                (alu_op == `ALU_LT_U) ? A < B :
+                (alu_op == `ALU_GE_S) ? $signed(A) >= $signed(B) :
+                (alu_op == `ALU_GE_U) ? A >= B :
                 {32'b0};
 
     // compare output

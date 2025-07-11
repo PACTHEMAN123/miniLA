@@ -10,6 +10,8 @@ module RF (
     // possible rR1 & rR2
     input   wire rf_sel,
 
+    input   wire wb_ena,
+
     // possible wD
     input   wire  [2:0]   wD_sel,
     input   wire  [31:0]  alu_c,
@@ -51,7 +53,8 @@ module RF (
     wire [4:0] wb_reg = (wD_sel != `WD_PC4_R1) ? reg3 :
                     5'b00001;
 
-    wire [31:0] wb_value =   (wD_sel == `WD_ALU) ? alu_c :
+    wire [31:0] wb_value = 
+                        (wD_sel == `WD_ALU) ? alu_c :
                         (wD_sel == `WD_SEXT2) ? sext2 :
                         (wD_sel == `WD_DRAM_8) ? {register[wb_reg][31:8], rdo[7:0]} :
                         (wD_sel == `WD_DRAM_16) ? {register[wb_reg][31:16], rdo[15:0]} :
@@ -66,7 +69,10 @@ module RF (
         if (rf_rst) begin
             // TODO: do nothing?
         end else begin
-            register[wb_reg] <= wb_value;
+            if (wb_ena) begin
+                // dont modify r0
+                register[wb_reg] <= (wb_reg == 0) ? 32'b0 : wb_value;
+            end
         end
     end
 
