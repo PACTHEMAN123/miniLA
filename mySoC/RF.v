@@ -46,7 +46,7 @@ module RF (
     // read out the register2
     assign rf_rD2 = (rf_sel == `RD_RK) ? register[reg2] :
                     (rf_sel == `RD_RD) ? register[reg3] :
-                    1'b0;
+                    32'b0;
 
     // write operation is blocked
     // write the dst register

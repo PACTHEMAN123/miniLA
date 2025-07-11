@@ -7,7 +7,7 @@ module Bridge (
     input  wire         rst_from_cpu,
     input  wire         clk_from_cpu,
     input  wire [31:0]  addr_from_cpu,
-    input  wire         we_from_cpu,
+    input  wire [3:0]   we_from_cpu,
     input  wire [31:0]  wdata_from_cpu,
     output reg  [31:0]  rdata_to_cpu,
     
@@ -16,7 +16,7 @@ module Bridge (
     output wire         clk_to_dram,
     output wire [31:0]  addr_to_dram,
     input  wire [31:0]  rdata_from_dram,
-    output wire         we_to_dram,
+    output wire [3:0]   we_to_dram,
     output wire [31:0]  wdata_to_dram,
     
     // Interface to 7-seg digital LEDs
@@ -62,7 +62,7 @@ module Bridge (
     // assign rst_to_dram  = rst_from_cpu;
     assign clk_to_dram   = clk_from_cpu;
     assign addr_to_dram  = addr_from_cpu;
-    assign we_to_dram    = we_from_cpu & access_mem;
+    assign we_to_dram    = we_from_cpu & {4{access_mem}};
     assign wdata_to_dram = wdata_from_cpu;
 
     // 7-seg LEDs

@@ -44,7 +44,7 @@ module miniLA_SoC (
     // Interface between CPU and Bridge
     wire [31:0] Bus_rdata;
     wire [31:0] Bus_addr;
-    wire        Bus_we;
+    wire [3:0]  Bus_we;
     wire [31:0] Bus_wdata;
     
     // Interface between bridge and DRAM
@@ -52,7 +52,7 @@ module miniLA_SoC (
     wire         clk_bridge2dram;
     wire [31:0]  addr_bridge2dram;
     wire [31:0]  rdata_dram2bridge;
-    wire         we_bridge2dram;
+    wire [3:0]   we_bridge2dram;
     wire [31:0]  wdata_bridge2dram;
     
     // Interface between bridge and peripherals

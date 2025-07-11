@@ -23,11 +23,8 @@ module Controller (
     output wire sext2_sel,
 
     // dram control signals
-    output wire Bus_we,
-    output wire dram_sel,
-
-    // // check if inst valid
-    // output wire hang,
+    output wire [1:0] dram_sel,
+    output wire [1:0] addr_mode,
 
     output wire wb_ena
 );
@@ -88,7 +85,7 @@ module Controller (
     wire B      = (opcode1 == 6'b010100);
     wire BL     = (opcode1 == 6'b010101);
 
-    assign alu_op =     (ADDW | ADDIW | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW) ? `ALU_ADD :
+    assign alu_op =     (ADDW | ADDIW | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW | PCADDU | JIRL) ? `ALU_ADD :
                         (SUBW) ? `ALU_SUB :
                         (OR | ORI) ? `ALU_OR :
                         (XOR | XORI) ? `ALU_XOR : 
@@ -121,7 +118,7 @@ module Controller (
                         ) ? `NPC_PC_4 :
                         (B | BL) ? `NPC_PC_OFF :
                         (BEQ | BNE | BLT | BLTU | BGE | BGEU) ? `NPC_PC_OFF_BR :
-                        (JIRL) ? `NPC_PC_OFF :
+                        (JIRL) ? `NPC_OFF :
                         2'b00;
 
     assign sext1_op =   (ADDIW | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW) ? `SEXT1_12 :
@@ -134,7 +131,8 @@ module Controller (
                         1'b0;
 
     assign rf_sel =     (ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU) ? `RD_RK :
-                        (BEQ | BNE | BLT | BLTU | BGE | BGEU) ? `RD_RD :
+                        ( STB | STH | STW
+                        | BEQ | BNE | BLT | BLTU | BGE | BGEU) ? `RD_RD :
                         1'b0;
 
     assign wD_sel =     (ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
@@ -150,13 +148,15 @@ module Controller (
                         (BL) ? `WD_PC4_R1 :
                         3'b000;
 
-    assign Bus_we =     (STB | STH | STW) ? 1'b1 :
-                        1'b0;
-
     assign dram_sel =   (LDB | LDBU | LDH | LDHU | LDW) ? `DRAM_R :
                         (STB) ? `DRAM_W_8 :
                         (STH) ? `DRAM_W_16 :
                         (STW) ? `DRAM_W_32 :
+                        2'b00;
+
+    assign addr_mode =  (LDB | LDBU | STB) ? `ADDR_BYTE :
+                        (LDH | LDHU | STH) ? `ADDR_HW   :
+                        (LDW | STW) ? `ADDR_WORD :
                         2'b00;
 
     // assign hang = !(ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU

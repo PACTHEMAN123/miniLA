@@ -17,7 +17,7 @@ module myCPU (
     // Interface to Bridge
     output wire [31:0]  Bus_addr,
     input  wire [31:0]  Bus_rdata,
-    output wire         Bus_we,
+    output wire [3:0]   Bus_we,
     output wire [31:0]  Bus_wdata
 
 `ifdef RUN_TRACE
@@ -38,7 +38,8 @@ module myCPU (
     wire [2:0]      wD_sel;
     wire [2:0]      sext1_op;
     wire            sext2_sel;
-    wire            we;
+    wire [1:0]      dram_sel;
+    wire [1:0]      addr_mode;
     wire            wb_ena;
 
     // ALU
@@ -62,8 +63,9 @@ module myCPU (
     wire [31:0]     zext_ext;
 
     // Dram sel
-    wire [1:0]      dram_sel;
+    wire [3:0]      dram_we;
     wire [31:0]     dram_addr;
+    wire [31:0]     dram_rdata;
     wire [31:0]     dram_wdata;
 
 `ifdef RUN_TRACE
@@ -113,7 +115,7 @@ module myCPU (
         .alu_c      (alu_c),
         .sext2      (sext2_ext),
         .pc4        (pc4),
-        .rdo        (Bus_rdata),
+        .rdo        (dram_rdata),
         .rf_rD1     (rf_rD1),
         .rf_rD2     (rf_rD2),
         .wb_ena     (wb_ena)
@@ -131,8 +133,8 @@ module myCPU (
     );
 
     SEXT2 mySEXT2 (
-        .sext2_sel   (sext2_sel),
-        .rdo        (Bus_rdata),
+        .sext2_sel  (sext2_sel),
+        .dram_rdata (dram_rdata),
         .sext2_ext  (sext2_ext)
     );
 
@@ -150,21 +152,25 @@ module myCPU (
         .wD_sel     (wD_sel),
         .sext1_op   (sext1_op),
         .sext2_sel  (sext2_sel),
-        .Bus_we     (we),
         .dram_sel   (dram_sel),
+        .addr_mode  (addr_mode),
         .wb_ena     (wb_ena)
     );
 
     DramSel myDramSel (
         .dram_sel   (dram_sel),
         .alu_c      (alu_c),
-        .rf_rD2     (rf_rD2),
+        .addr_mode  (addr_mode),
         .dram_addr  (dram_addr),
-        .dram_wdata (dram_wdata)
+        .dram_rdata_raw (Bus_rdata),
+        .dram_rdata (dram_rdata),
+        .rf_rD2     (rf_rD2),
+        .dram_wdata (dram_wdata),
+        .dram_we    (dram_we)
     );
 
     assign Bus_addr = dram_addr;
-    assign Bus_we   = we;
+    assign Bus_we   = dram_we;
     assign Bus_wdata = dram_wdata;
 
 `ifdef RUN_TRACE
