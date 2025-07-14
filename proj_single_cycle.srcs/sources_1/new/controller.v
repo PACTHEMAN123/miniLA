@@ -22,7 +22,11 @@ module Controller (
     // sext2 control signals
     output wire sext2_sel,
 
-    // TODOS: debug interface
+    // dram control signals
+    output wire [1:0] dram_sel,
+    output wire [1:0] addr_mode,
+
+    output wire wb_ena
 );
 
 
@@ -81,28 +85,29 @@ module Controller (
     wire B      = (opcode1 == 6'b010100);
     wire BL     = (opcode1 == 6'b010101);
 
-    assign alu_op =     (ADDW | ADDIW | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW) ? ALU_ADD :
-                        (SUBW) ? ALU_SUB :
-                        (OR | ORI) ? ALU_OR :
-                        (XOR | XORI) ? ALU_XOR : 
-                        (SLLW | SLLIW) ? ALU_SL :
-                        (SRLW | SRLIW) ? ALU_SRL :
-                        (SRAW | SRAIW) ? ALU_SRA :
-                        (AND | ANDI) ? ALU_AND :
-                        (BEQ) ? ALU_EQ :
-                        (BNE) ? ALU_NEQ :
-                        (SLT | SLTI | BLT) ? ALU_LT_S :
-                        (SLTU | SLTUI | BLTU) ? ALU_LT_U :
-                        (BGE) ? ALU_GE_S :
-                        (BGEU) ? ALU_GE_U :
+    assign alu_op =     (ADDW | ADDIW | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW | PCADDU | JIRL) ? `ALU_ADD :
+                        (SUBW) ? `ALU_SUB :
+                        (OR | ORI) ? `ALU_OR :
+                        (XOR | XORI) ? `ALU_XOR : 
+                        (SLLW | SLLIW) ? `ALU_SL :
+                        (SRLW | SRLIW) ? `ALU_SRL :
+                        (SRAW | SRAIW) ? `ALU_SRA :
+                        (AND | ANDI) ? `ALU_AND :
+                        (BEQ) ? `ALU_EQ :
+                        (BNE) ? `ALU_NEQ :
+                        (SLT | SLTI | BLT) ? `ALU_LT_S :
+                        (SLTU | SLTUI | BLTU) ? `ALU_LT_U :
+                        (BGE) ? `ALU_GE_S :
+                        (BGEU) ? `ALU_GE_U :
                         4'b0;
 
-    assign alu_sel =    (ADDW | SUBW | AND | OR | XOR | SLT | SLTU) ? ASEL_RD2 :
-                        (SLLW | SRLW | SRAW) ? ASEL_RD2_5 : 
-                        (SLLIW | SRLIW | SRAIW) ? ASEL_INST_5 :
-                        (PCADDU) ? ASEL_INST_20 :
-                        (ADDIW | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW | JIRL) ? ASEL_SEXT1 :
-                        (ANDI | ORI | XORI) ? ASEL_ZEXT :
+    assign alu_sel =    (ADDW | SUBW | AND | OR | XOR | SLT | SLTU
+                        | BEQ | BNE | BLT | BLTU | BGE | BGEU) ? `ASEL_RD2 :
+                        (SLLW | SRLW | SRAW) ? `ASEL_RD2_5 : 
+                        (SLLIW | SRLIW | SRAIW) ? `ASEL_INST_5 :
+                        (PCADDU) ? `ASEL_INST_20 :
+                        (ADDIW | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW | JIRL) ? `ASEL_SEXT1 :
+                        (ANDI | ORI | XORI) ? `ASEL_ZEXT :
                         3'b000;
                     
     assign npc_op =     (ADDW | SUBW | AND | OR | XOR | SLLW 
@@ -110,36 +115,56 @@ module Controller (
                         | ADDIW | ANDI | ORI | XORI | SLTI | SLTUI
                         | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW
                         | LU12IW | PCADDU
-                        ) ? NPC_PC_4 :
-                        (B | BL) ? NPC_PC_OFF :
-                        (BEQ | BNE | BLT | BLTU | BGE | BGEU) ? NPC_PC_OFF_BR :
-                        (JIRL) ? NPC_PC_OFF :
+                        ) ? `NPC_PC_4 :
+                        (B | BL) ? `NPC_PC_OFF :
+                        (BEQ | BNE | BLT | BLTU | BGE | BGEU) ? `NPC_PC_OFF_BR :
+                        (JIRL) ? `NPC_OFF :
                         2'b00;
 
-    assign sext1_op =   (ADDIW | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW) ? SEXT1_12 :
-                        (BEQ | BNE | BLT | BLTU | BGE | BGEU | JIRL) ? SEXT1_16 :
-                        (B | BL) ? SEXT1_28 :
+    assign sext1_op =   (ADDIW | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW) ? `SEXT1_12 :
+                        (BEQ | BNE | BLT | BLTU | BGE | BGEU | JIRL) ? `SEXT1_16 :
+                        (B | BL) ? `SEXT1_28 :
                         2'b00;
 
-    assign sext2_sel =  (LDB) ? SEXT2_8 :
-                        (LDH) ? SEXT2_16 :
+    assign sext2_sel =  (LDB) ? `SEXT2_8 :
+                        (LDH) ? `SEXT2_16 :
                         1'b0;
 
-    assign rf_sel =     (ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU) ? RD_RK :
-                        (BEQ | BNE | BLT | BLTU | BGE | BGEU) ? RD_RD :
+    assign rf_sel =     (ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU) ? `RD_RK :
+                        ( STB | STH | STW
+                        | BEQ | BNE | BLT | BLTU | BGE | BGEU) ? `RD_RD :
                         1'b0;
 
     assign wD_sel =     (ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
                         | SLLIW | SRLIW | SRAIW
                         | ADDIW | ANDI | ORI | XORI | SLTI | SLTUI
-                        | PCADDU) ? WD_ALU :
-                        (LDB | LDH) ? WD_SEXT2 :
-                        (LDBU) ? WD_DRAM_8 :
-                        (LDHU) ? WD_DRAM_16 : 
-                        (LDW) ? WD_DRAM_32 :
-                        (LU12IW) ? WD_INST :
-                        (JIRL) ? WD_PC4_RD :
-                        (BL) ? WD_PC4_R1 :
+                        | PCADDU) ? `WD_ALU :
+                        (LDB | LDH) ? `WD_SEXT2 :
+                        (LDBU) ? `WD_DRAM_8 :
+                        (LDHU) ? `WD_DRAM_16 : 
+                        (LDW) ? `WD_DRAM_32 :
+                        (LU12IW) ? `WD_INST :
+                        (JIRL) ? `WD_PC4_RD :
+                        (BL) ? `WD_PC4_R1 :
                         3'b000;
 
+    assign dram_sel =   (LDB | LDBU | LDH | LDHU | LDW) ? `DRAM_R :
+                        (STB) ? `DRAM_W_8 :
+                        (STH) ? `DRAM_W_16 :
+                        (STW) ? `DRAM_W_32 :
+                        2'b00;
+
+    assign addr_mode =  (LDB | LDBU | STB) ? `ADDR_BYTE :
+                        (LDH | LDHU | STH) ? `ADDR_HW   :
+                        (LDW | STW) ? `ADDR_WORD :
+                        2'b00;
+
+    // assign hang = !(ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
+    //                 | SLLIW | SRLIW | SRAIW
+    //                 | ADDIW | ANDI | ORI | XORI | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW
+    //                 | LU12IW | PCADDU | 
+    //                 | BEQ | BNE | BLT | BLTU | BGE | BGEU | JIRL
+    //                 | B | BL);
+
+    assign wb_ena = !(STB | STH | STW | BEQ | BNE | BLT | BLTU | BGE | BGEU | B);
 endmodule

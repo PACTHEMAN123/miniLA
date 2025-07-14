@@ -19,9 +19,10 @@ module NPC (
     // pc4 = pc + 4
     assign pc4 = pc + 4;
 
-    assign npc =    (npc_op == NPC_PC_4) ? pc + 4 :
-                    (npc_op == NPC_PC_OFF) ? pc + sext :
-                    (npc_op == NPC_PC_OFF_BR) ? (br ? pc + sext : pc + 4) :
-                    (npc_op == NPC_OFF) ? alu_c;
+    assign npc =    (npc_op == `NPC_PC_4) ? pc + 4 :
+                    (npc_op == `NPC_PC_OFF) ? pc + sext :
+                    (npc_op == `NPC_PC_OFF_BR) ? (br ? pc + sext : pc + 4) :
+                    (npc_op == `NPC_OFF) ? alu_c :
+                    32'b0;
 
 endmodule

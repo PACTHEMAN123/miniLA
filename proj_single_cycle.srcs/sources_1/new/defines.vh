@@ -1,5 +1,5 @@
 // Annotate this macro before synthesis
-// `define RUN_TRACE
+`define RUN_TRACE
 
 // TODO: 在此处定义你的宏
 // NPC control signals
@@ -56,6 +56,18 @@
 // sext2_sels
 `define SEXT2_8         1'b0
 `define SEXT2_16        1'b1
+
+// Dram
+// dram sels
+`define DRAM_R          2'b00
+`define DRAM_W_8        2'b01
+`define DRAM_W_16       2'b10
+`define DRAM_W_32       2'b11
+
+// dram address access mode
+`define ADDR_BYTE       2'b01
+`define ADDR_HW         2'b10
+`define ADDR_WORD       2'b11
 
 
 // 外设I/O接口电路的端口地址

@@ -2,12 +2,12 @@
 
 // zero extend module
 module ZEXT (
-    input   wire  [11:0]  inst,
+    input   wire  [31:0]  inst,
 
     output  wire  [31:0]  zext_ext
 );
 
-    assign zext_ext = {20'b0, inst};
+    assign zext_ext = {20'b0, inst[21:10]};
 
 
 endmodule

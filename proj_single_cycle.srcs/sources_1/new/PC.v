@@ -6,13 +6,13 @@ module PC (
     input   wire          pc_rst,
     input   wire          pc_clk,
     input   wire  [31:0]  din,
-    output  wire  [31:0]  pc
+    output  reg   [31:0]  pc
 );
 
-always @(posedge pc_clk or posedge pc_rst) begin
+always @(posedge pc_clk or pc_rst) begin
     if (pc_rst) begin
-        pc <= 0;
-    end else begin
+        pc <= 32'b0;
+    end else if (pc_clk) begin
         pc <= din;
     end
 end

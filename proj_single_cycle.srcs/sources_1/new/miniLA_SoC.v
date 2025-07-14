@@ -3,7 +3,7 @@
 `include "defines.vh"
 
 module miniLA_SoC (
-    input  wire         fpga_rstn,   // Low active
+    input  wire         fpga_rst,   // Low active
     input  wire         fpga_clk,
 
     input  wire [15:0]  sw,
@@ -44,7 +44,7 @@ module miniLA_SoC (
     // Interface between CPU and Bridge
     wire [31:0] Bus_rdata;
     wire [31:0] Bus_addr;
-    wire        Bus_we;
+    wire [3:0]  Bus_we;
     wire [31:0] Bus_wdata;
     
     // Interface between bridge and DRAM
@@ -52,7 +52,7 @@ module miniLA_SoC (
     wire         clk_bridge2dram;
     wire [31:0]  addr_bridge2dram;
     wire [31:0]  rdata_dram2bridge;
-    wire         we_bridge2dram;
+    wire [3:0]   we_bridge2dram;
     wire [31:0]  wdata_bridge2dram;
     
     // Interface between bridge and peripherals
@@ -87,7 +87,7 @@ module miniLA_SoC (
 `endif
     
     myCPU Core_cpu (
-        .cpu_rst            (!fpga_rstn),
+        .cpu_rst            (fpga_rst),
         .cpu_clk            (cpu_clk),
 
         // Interface to IROM
