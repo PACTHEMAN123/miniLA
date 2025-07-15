@@ -1,5 +1,5 @@
 // Annotate this macro before synthesis
-`define RUN_TRACE
+// `define RUN_TRACE
 
 // TODO: 在此处定义你的宏
 // NPC control signals
@@ -75,3 +75,4 @@
 `define PERI_ADDR_LED   32'hFFFF_F060
 `define PERI_ADDR_SW    32'hFFFF_F070
 `define PERI_ADDR_BTN   32'hFFFF_F078
+`define PERI_ADDR_TIMER 32'hFFFF_F020

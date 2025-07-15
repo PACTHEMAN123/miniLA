@@ -68,10 +68,11 @@ module RF (
     always @(posedge rf_rst or posedge rf_clk) begin
         if (rf_rst) begin
             // TODO: do nothing?
+            register[0] <= 32'b0;
         end else begin
-            if (wb_ena) begin
+            if (wb_ena && wb_reg != 0) begin
                 // dont modify r0
-                register[wb_reg] <= (wb_reg == 0) ? 32'b0 : wb_value;
+                register[wb_reg] <= wb_value;
             end
         end
     end

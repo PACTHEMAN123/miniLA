@@ -17,7 +17,7 @@ module myCPU (
     // Interface to Bridge
     output wire [31:0]  Bus_addr,
     input  wire [31:0]  Bus_rdata,
-    output wire [3:0]   Bus_we,
+    output wire         Bus_we,
     output wire [31:0]  Bus_wdata
 
 `ifdef RUN_TRACE
@@ -63,7 +63,7 @@ module myCPU (
     wire [31:0]     zext_ext;
 
     // Dram sel
-    wire [3:0]      dram_we;
+    wire            dram_we;
     wire [31:0]     dram_addr;
     wire [31:0]     dram_rdata;
     wire [31:0]     dram_wdata;
