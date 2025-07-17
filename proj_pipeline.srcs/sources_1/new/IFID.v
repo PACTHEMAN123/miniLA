@@ -4,20 +4,16 @@
 // pc and npc
 
 
-module (
+module IFID (
     input wire rst,
     input wire clk,
 
     // signals
-    input wire rf_sel_in,
-
-    output wire rf_sel_out,
-
+    
     // modules
     // todos: the write back connection
-    input wire [31:0] inst_in,
-    output wire [31:0] inst_out,
-
+    input reg [31:0] inst_in,
+    output reg [31:0] inst_out
 );
 
     always @(posedge rst or posedge clk) begin

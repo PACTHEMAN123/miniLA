@@ -42,7 +42,7 @@ module DigLEDs #(
         if (dig_rst) begin
             cnt <= FREQ;
             idx <= 3'b0;
-            data <= 31'b0;
+            data <= 32'b0;
         end else begin
             if (dig_we) begin
                 data <= dig_wdata;
