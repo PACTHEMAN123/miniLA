@@ -1,0 +1,13 @@
+**.log
+**.jou
+**.cache/
+**.hw/
+**.cache/
+**.hw/
+**.ip_user_files/
+**.runs/
+**.sim
+**.debug
+**.str
+**.zip
+.Xil/
