@@ -23,20 +23,6 @@ module miniLA_sim();
         fpga_clk  = 0;
         #23
         fpga_rstn = 1;
-        switch    = 16'h00_00;
-        button    = 5'h0;
-        
-        #8000
-        switch = 1;
-        
-        #8000
-        switch = 2;
-        
-        #16000
-        switch = 3;
-        
-        wait(led[0] == 1'b1);
-        switch = 0;
     end
 
     always #5 fpga_clk = !fpga_clk;

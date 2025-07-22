@@ -30,115 +30,32 @@ module myCPU (
 `endif
 );
 
-    // controller
-    
-
-    // ALU
-    wire [31:0]     alu_c;
-    wire            alu_f;
-
-    // RF
-    wire [31:0]     rf_rD1;
-    wire [31:0]     rf_rD2;
-
-    // NPC
-    wire [31:0]     npc;
-    wire [31:0]     pc4;
-
-    // PC
+    /// IF
+    wire [1:0]  npc_op;
     wire [31:0]     pc;
-
-    // Dram sel
     
-
-`ifdef RUN_TRACE
-    wire [4:0]      wb_reg;
-    wire [31:0]     wb_value;
-`endif
-
-
-    /// Instruction Fetch
-    PC myPC (
-        .pc_rst     (cpu_rst),
-        .pc_clk     (cpu_clk),
-        .din        (npc),
-        .pc         (pc)
-    );
-
-    assign inst_addr = pc[31:2];
-
-    NPC myNPC (
-        .br         (alu_f),
-        .pc         (pc),
-        .alu_c      (alu_c),
-        .sext       (sext1_ext),
-        .npc_op     (npc_op),
-        .npc        (npc),
-        .pc4        (pc4)
-    );
 
     /// IF.ID
     wire [31:0] IFID_inst_in = inst;
     wire [31:0] IFID_inst_out;
+    wire [31:0] IFID_pc4_in;
+    wire [31:0] IFID_pc4_out;
+    wire [31:0] IFID_pc_in = pc;
+    wire [31:0] IFID_pc_out;
 
-    IFID myIFID (
-        .rst        (cpu_rst),
-        .clk        (cpu_clk),
-        .inst_in    (inst_in),
-        .inst_out   (inst_out)
-    );
-    
     /// ID
-    
-
-    RF myRF (
-        .rf_rst     (cpu_rst),
-        .rf_clk     (cpu_clk),
-        .inst       (inst),
-        .rf_sel     (rf_sel),
-        .wD_sel     (wD_sel),
-        .alu_c      (alu_c),
-        .sext2      (sext2_ext),
-        .pc4        (pc4),
-        .rdo        (dram_rdata),
-        .rf_rD1     (rf_rD1),
-        .rf_rD2     (rf_rD2),
-        .wb_ena     (wb_ena)
-`ifdef RUN_TRACE
-        ,
-        .debug_wb_reg (wb_reg),
-        .debug_wb_value (wb_value)
-`endif
-    );
-    
-    Controller myController (
-        .inst       (IFID_inst_out)
-        .alu_op     (IDEX_alu_op_in),
-        .alu_sel    (IDEX_alu_sel_in),
-        .npc_op     (),
-        .rf_sel     (),
-        .wD_sel     (),
-        .sext1_op   (sext1_op),
-        .sext2_sel  (),
-        .dram_sel   (IDEX_dram_sel_in),
-        .addr_mode  (IDEX_addr_mode_in),
-        .wb_ena     (IDEX_wb_ena_in),
-    );
-
+    wire    rf_sel;
     wire [2:0] sext1_op;
-    SEXT1 mySEXT1 (
-        .sext1_op   (sext1_op),
-        .inst       (IFID_inst_out),
-        .sext1_ext  (IDEX_sext1_in)
-    );
-
+    wire [2:0]  wD_sel;
     wire [31:0] zext_ext;
-    ZEXT myZEXT (
-        .inst       (IFID_inst_out),
-        .zext_ext   (IDEX_zext_in)
-    );
+    wire [31:0] rf_rD1;
+    wire [31:0] rf_rD2;
 
     /// ID.EX
+    wire [1:0]  IDEX_npc_op_in = npc_op;
+    wire [1:0]  IDEX_npc_op_out;
+    wire [2:0]  IDEX_wD_sel_in = wD_sel;
+    wire [2:0]  IDEX_wD_sel_out;
     wire        IDEX_wb_ena_in;
     wire        IDEX_wb_ena_out;
     wire [1:0]  IDEX_dram_sel_in;
@@ -151,22 +68,180 @@ module myCPU (
     wire [1:0]  IDEX_addr_mode_out;
 
 
-    wire [31:0] IDEX_inst_in;
+    wire [31:0] IDEX_inst_in = IFID_inst_out;
     wire [31:0] IDEX_inst_out;
     wire [31:0] IDEX_sext1_in;
-    wrei [31:0] IDEX_sext1_out;
-    wire [31:0] IDEX_rD1_in;
+    wire [31:0] IDEX_sext1_out;
+    wire [31:0] IDEX_rD1_in = rf_rD1;
     wire [31:0] IDEX_rD1_out;
-    wire [31:0] IDEX_rD2_in;
+    wire [31:0] IDEX_rD2_in = rf_rD2;
     wire [31:0] IDEX_rD2_out;
     wire [31:0] IDEX_zext_in;
     wire [31:0] IDEX_zext_out;
-    wire [31:0] IDEX_pc_in;
+    wire [31:0] IDEX_pc_in = IFID_pc_out;
     wire [31:0] IDEX_pc_out;
+    wire [31:0] IDEX_pc4_in;
+    wire [31:0] IDEX_pc4_out;
+
+    /// EX
+    wire [31:0]     alu_c;
+    wire            alu_f;
+
+    /// EX.MEM
+    wire        EXMEM_wb_ena_in = IDEX_wb_ena_out;
+    wire        EXMEM_wb_ena_out;
+    wire [2:0]  EXMEM_wD_sel_in = IDEX_wD_sel_out;
+    wire [2:0]  EXMEM_wD_sel_out;
+    wire [1:0]  EXMEM_dram_sel_in = IDEX_dram_sel_out;
+    wire [1:0]  EXMEM_dram_sel_out;
+    wire [1:0]  EXMEM_addr_mode_in = IDEX_addr_mode_out;
+    wire [1:0]  EXMEM_addr_mode_out;
+    wire [1:0]  EXMEM_npc_op_in = IDEX_npc_op_out;
+    wire [1:0]  EXMEM_npc_op_out;
+
+    wire [31:0] EXMEM_pc4_in = IDEX_pc4_out;
+    wire [31:0] EXMEM_pc4_out;
+    wire [31:0] EXMEM_alu_c_in = alu_c;
+    wire [31:0] EXMEM_alu_c_out;
+    wire        EXMEM_alu_f_in = alu_f;
+    wire        EXMEM_alu_f_out;
+    wire [31:0] EXMEM_rD2_in = IDEX_rD2_out;
+    wire [31:0] EXMEM_rD2_out;
+    wire [31:0] EXMEM_sext1_in = IDEX_sext1_in;
+    wire [31:0] EXMEM_sext1_out;
+    wire [31:0] EXMEM_pc_in = IDEX_pc_out;
+    wire [31:0] EXMEM_pc_out;
+    wire [31:0] EXMEM_inst_in = IDEX_inst_out;
+    wire [31:0] EXMEM_inst_out;
+
+    /// MEM.WB
+    wire [2:0] MEMWB_wD_sel_in = EXMEM_wD_sel_out;
+    wire [2:0] MEMWB_wD_sel_out;
+    wire MEMWB_wb_ena_in = EXMEM_wb_ena_out;
+    wire MEMWB_wb_ena_out;
+    wire [1:0] MEMWB_npc_op_in = EXMEM_npc_op_out;
+    wire [1:0] MEMWB_npc_op_out;
+
+    wire [31:0] MEMWB_alu_c_in = EXMEM_alu_c_out;
+    wire [31:0] MEMWB_alu_c_out;
+    wire        MEMWB_alu_f_in = EXMEM_alu_f_out;
+    wire        MEMWB_alu_f_out;
+    wire [31:0] MEMWB_sext2_in = sext2_ext;
+    wire [31:0] MEMWB_sext2_out;
+    wire [31:0] MEMWB_pc4_in = EXMEM_pc4_out;
+    wire [31:0] MEMWB_pc4_out;
+    wire [31:0] MEMWB_rdo_in = dram_rdata;
+    wire [31:0] MEMWB_rdo_out;
+    wire [31:0] MEMWB_sext1_in = EXMEM_sext1_out;
+    wire [31:0] MEMWB_sext1_out;
+    wire [31:0] MEMWB_pc_in = EXMEM_pc_out;
+    wire [31:0] MEMWB_pc_out;
+    wire [31:0] MEMWB_inst_in = EXMEM_inst_out;
+    wire [31:0] MEMWB_inst_out;
+
+    /// MEM
+    wire            dram_we;
+    wire [31:0]     dram_addr;
+    wire [31:0]     dram_rdata;
+    wire [31:0]     dram_wdata;
+
+
+   
+
+`ifdef RUN_TRACE
+    wire [4:0]      wb_reg;
+    wire [31:0]     wb_value;
+`endif
+
+
+    /// Instruction Fetch
+    wire [31:0]     npc;
+    PC myPC (
+        .pc_rst     (cpu_rst),
+        .pc_clk     (cpu_clk),
+        .din        (npc),
+        .pc         (pc)
+    );
+
+    assign inst_addr = pc[31:2];
+
+    
+    NPC myNPC (
+        .br         (MEMWB_alu_f_out),
+        .pc         (pc),
+        .alu_c      (MEMWB_alu_c_out),
+        .sext       (MEMWB_sext1_out),
+        .npc_op     (MEMWB_npc_op_out),
+        .npc        (npc),
+        .pc4        (IFID_pc4_in)
+    );
+
+    
+
+    IFID myIFID (
+        .rst        (cpu_rst),
+        .clk        (cpu_clk),
+        .inst_in    (IFID_inst_in),
+        .inst_out   (IFID_inst_out),
+        .pc_in      (IFID_pc_in),
+        .pc_out     (IFID_pc_out)
+    );
+    
+    
+    RF myRF (
+        .rf_rst     (cpu_rst),
+        .rf_clk     (cpu_clk),
+        .inst1      (IFID_inst_out),
+        .inst2      (MEMWB_inst_out),
+        .rf_sel     (rf_sel),
+        .wD_sel     (MEMWB_wD_sel_out),
+        .alu_c      (MEMWB_alu_c_out),
+        .sext2      (MEMWB_sext2_out),
+        .pc4        (MEMWB_pc4_out),
+        .rdo        (MEMWB_rdo_out),
+        .rf_rD1     (rf_rD1),
+        .rf_rD2     (rf_rD2),
+        .wb_ena     (MEMWB_wb_ena_out)
+`ifdef RUN_TRACE
+        ,
+        .debug_wb_reg (wb_reg),
+        .debug_wb_value (wb_value)
+`endif
+    );
+    
+    
+    Controller myController (
+        .inst       (IFID_inst_out),
+        .alu_op     (IDEX_alu_op_in),
+        .alu_sel    (IDEX_alu_sel_in),
+        .npc_op     (npc_op),
+        .rf_sel     (rf_sel),
+        .wD_sel     (wD_sel),
+        .sext1_op   (sext1_op),
+        .sext2_sel  (IDEX_sext2_in),
+        .dram_sel   (IDEX_dram_sel_in),
+        .addr_mode  (IDEX_addr_mode_in),
+        .wb_ena     (IDEX_wb_ena_in)
+    );
+
+    
+    SEXT1 mySEXT1 (
+        .sext1_op   (sext1_op),
+        .inst       (IFID_inst_out),
+        .sext1_ext  (IDEX_sext1_in)
+    );
+
+    
+    ZEXT myZEXT (
+        .inst       (IFID_inst_out),
+        .zext_ext   (IDEX_zext_in)
+    );
 
     IDEX myIDEX (
         .rst        (cpu_rst),
         .clk        (cpu_clk),
+        .wD_sel_in  (IDEX_wD_sel_in),
+        .wD_sel_out (IDEX_wD_sel_out),
         .wb_ena_in  (IDEX_wb_ena_in),
         .wb_ena_out (IDEX_wb_ena_out),
         .dram_sel_in(IDEX_dram_sel_in),
@@ -188,40 +263,24 @@ module myCPU (
         .zext_in    (IDEX_zext_in),
         .zext_out   (IDEX_zext_out),
         .pc_in      (IDEX_pc_in),
-        .pc_out     (IDEX_pc_out)
+        .pc_out     (IDEX_pc_out),
+        .npc_op_in  (IDEX_npc_op_in),
+        .npc_op_out (IDEX_npc_op_out)
     );
 
-    /// EX
     ALU myALU (
         .inst       (IDEX_inst_out),
         .alu_op     (IDEX_alu_op_out),
         .pc         (IDEX_pc_out),
         .rf_rD1     (IDEX_rD1_out),
         .rf_rD2     (IDEX_rD2_out),
-        .sext1      (IDEX_sext1_in),
+        .sext1      (IDEX_sext1_out),
         .zext       (IDEX_zext_out),
         .alu_sel    (IDEX_alu_sel_out),
         .alu_c      (alu_c),
         .alu_f      (alu_f)
     );
 
-
-    /// EX.MEM
-    wire        EXMEM_wb_ena_in = IDEX_wb_ena_out;
-    wire        EXMEM_wb_ena_out;
-    wire [2:0]  EXMEM_wD_sel_in = ;
-    wire [2:0]  EXMEM_wD_sel_out;
-    wire [1:0]  EXMEM_dram_sel_in = IDEX_dram_sel_out;
-    wire [1:0]  EXMEM_dram_sel_out;
-    wire [1:0]  EXMEM_addr_mode_in = IDEX_addr_mode_out;
-    wire [1:0]  EXMEM_addr_mode_out;
-
-    wire [31:0] EXMEM_alu_c_in;
-    wire [31:0] EXMEM_alu_c_out;
-    wire [31:0] EXMEM_rD2_in = IDEX_rD2_out;
-    wire [31:0] EXMEM_rD2_out;
-    
-    
     EXMEM myEXMEM (
         .rst        (cpu_rst),
         .clk        (cpu_clk),
@@ -236,15 +295,16 @@ module myCPU (
         .addr_mode_in(EXMEM_addr_mode_in),
         .addr_mode_out(EXMEM_addr_mode_out),
         .rf_rD2_in  (EXMEM_rD2_in),
-        .rf_rD2_out (EXMEM_rD2_out)
+        .rf_rD2_out (EXMEM_rD2_out),
+        .sext1_in   (EXMEM_sext1_in),
+        .sext1_out  (EXMEM_sext1_out),
+        .npc_op_in  (EXMEM_npc_op_in),
+        .npc_op_out (EXMEM_npc_op_out),
+        .pc_in      (EXMEM_pc_in),
+        .pc_out     (EXMEM_pc_out),
+        .inst_in    (EXMEM_inst_in),
+        .inst_out   (EXMEM_inst_out)
     );
-
-
-    /// MEM
-    wire            dram_we;
-    wire [31:0]     dram_addr;
-    wire [31:0]     dram_rdata;
-    wire [31:0]     dram_wdata;
 
     DramSel myDramSel (
         .dram_sel   (EXMEM_dram_sel_out),
@@ -262,29 +322,11 @@ module myCPU (
     assign Bus_we   = dram_we;
     assign Bus_wdata = dram_wdata;
 
-    
-
     SEXT2 mySEXT2 (
         .sext2_sel  (sext2_sel),
         .dram_rdata (dram_rdata),
         .sext2_ext  (sext2_ext)
     );
-
-
-    /// MEM.WB
-    wire [2:0] MEMWB_wD_sel_in = EXMEM_wD_sel_out;
-    wire [2:0] MEMWB_wD_sel_out;
-    wire MEMWB_wb_ena_in = EXMEM_wb_ena_out;
-    wire MEMWB_wb_ena_out;
-
-    wire [31:0] MEMWB_alu_c_in = EXMEM_alu_c_out;
-    wire [31:0] MEMWB_alu_c_out;
-    wire [31:0] MEMWB_sext2_in = sext2_ext;
-    wire [31:0] MEMWB_sext2_out;
-    wire [31:0] MEMWB_pc4_in = ;
-    wire [31:0] MEMWB_pc4_out;
-    wire [31:0] MEMWB_rdo_in = dram_rdata;
-    wire [31:0] MEMWB_rdo_out;
 
     MEMWB myMEMWB (
         .rst        (cpu_rst),
@@ -300,7 +342,15 @@ module myCPU (
         .pc4_in     (MEMWB_pc4_in),
         .pc4_out    (MEMWB_pc4_out),
         .rdo_in     (MEMWB_rdo_in),
-        .rdo_out    (MEMWB_rdo_out)
+        .rdo_out    (MEMWB_rdo_out),
+        .sext1_in   (MEMWB_sext1_in),
+        .sext1_out  (MEMWB_sext1_out),
+        .npc_op_in  (MEMWB_npc_op_in),
+        .npc_op_out (MEMWB_npc_op_out),
+        .pc_in      (MEMWB_pc_in),
+        .pc_out     (MEMWB_pc_out),
+        .inst_in    (MEMWB_inst_in),
+        .inst_out   (MEMWB_inst_out)
     );
 
 `ifdef RUN_TRACE
