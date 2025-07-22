@@ -5,7 +5,8 @@ module RF (
     input   wire          rf_rst,
     input   wire          rf_clk,
 
-    input   wire  [31:0]  inst,
+    input   wire  [31:0]  inst1, // for decode
+    input   wire  [31:0]  inst2, // for write back
 
     // possible rR1 & rR2
     input   wire rf_sel,
@@ -33,9 +34,9 @@ module RF (
     reg  [31:0]  register [0:31];
 
     // extract the inst
-    wire [4:0] reg1 = inst[9:5];    // rj
-    wire [4:0] reg2 = inst[14:10];  // rk
-    wire [4:0] reg3 = inst[4:0];    // rd
+    wire [4:0] reg1 = inst1[9:5];    // rj
+    wire [4:0] reg2 = inst1[14:10];  // rk
+    wire [4:0] reg3 = inst1[4:0];    // rd
 
     
 
@@ -50,7 +51,7 @@ module RF (
 
     // write operation is blocked
     // write the dst register
-    wire [4:0] wb_reg = (wD_sel != `WD_PC4_R1) ? reg3 :
+    wire [4:0] wb_reg = (wD_sel != `WD_PC4_R1) ? inst2[4:0] :
                     5'b00001;
 
     wire [31:0] wb_value = 
@@ -59,7 +60,7 @@ module RF (
                         (wD_sel == `WD_DRAM_8) ? {register[wb_reg][31:8], rdo[7:0]} :
                         (wD_sel == `WD_DRAM_16) ? {register[wb_reg][31:16], rdo[15:0]} :
                         (wD_sel == `WD_DRAM_32) ? rdo :
-                        (wD_sel == `WD_INST) ? {inst[24:5], 12'b0} :
+                        (wD_sel == `WD_INST) ? {inst2[24:5], 12'b0} :
                         (wD_sel == `WD_PC4_RD) ? pc4 :
                         (wD_sel == `WD_PC4_R1) ? pc4 :
                         32'b0; 
@@ -68,10 +69,11 @@ module RF (
     always @(posedge rf_rst or posedge rf_clk) begin
         if (rf_rst) begin
             // TODO: do nothing?
+            register[0] <= 32'b0;
         end else begin
-            if (wb_ena) begin
+            if (wb_ena && wb_reg != 0) begin
                 // dont modify r0
-                register[wb_reg] <= (wb_reg == 0) ? 32'b0 : wb_value;
+                register[wb_reg] <= wb_value;
             end
         end
     end

@@ -43,7 +43,7 @@ module DRAM # (
 )(
     input clk,
     input [ADDR_BITS - 1: 0] a,
-    input we,
+    input [3:0] we,
     input [31:0] d,
     output [31:0] spo
 );
@@ -75,9 +75,12 @@ module DRAM # (
     end
 
     assign spo = mem[a];
-    
+
     always @(posedge clk) begin
-        if (we) mem[a] <= d;
+        if (we[0]) mem[a][ 7: 0] <= d[ 7: 0];
+        if (we[1]) mem[a][15: 8] <= d[15: 8];
+        if (we[2]) mem[a][23:16] <= d[23:16];
+        if (we[3]) mem[a][31:24] <= d[31:24];
     end
 
 endmodule
