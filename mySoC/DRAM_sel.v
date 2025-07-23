@@ -25,7 +25,7 @@ module DramSel (
     // notice that we seek addr in words
     wire [1:0] byte_offset = alu_c[1:0];
     wire [31:0] word_addr = {alu_c[31:2], 2'b0};
-    assign dram_addr =  alu_c;
+    assign dram_addr =  word_addr;
 
     wire [7:0] read_byte =  (byte_offset == 2'b00) ? dram_rdata_raw[7:0] :
                             (byte_offset == 2'b01) ? dram_rdata_raw[15:8] :
@@ -42,14 +42,14 @@ module DramSel (
                         32'b0;
 
     wire [31:0] write_byte =    (byte_offset == 2'b00) ? {dram_rdata_raw[31:8], rf_rD2[7:0]} :
-                                (byte_offset == 2'b01) ? {dram_rdata_raw[31:16], rf_rD2[15:8], dram_rdata_raw[7:0]} :
-                                (byte_offset == 2'b10) ? {dram_rdata_raw[31:24], rf_rD2[23:16], dram_rdata_raw[15:0]} :
-                                (byte_offset == 2'b11) ? {rf_rD2[31:24], dram_rdata_raw[23:0]} :
+                                (byte_offset == 2'b01) ? {dram_rdata_raw[31:16], rf_rD2[7:0], dram_rdata_raw[7:0]} :
+                                (byte_offset == 2'b10) ? {dram_rdata_raw[31:24], rf_rD2[7:0], dram_rdata_raw[15:0]} :
+                                (byte_offset == 2'b11) ? {rf_rD2[7:0], dram_rdata_raw[23:0]} :
                                 32'b0;
     
     
     wire [31:0] write_hw =      (byte_offset == 2'b00) ? {dram_rdata_raw[31:16], rf_rD2[15:0]} :
-                                (byte_offset == 2'b10) ? {rf_rD2[31:16], dram_rdata_raw[15:0]} :
+                                (byte_offset == 2'b10) ? {rf_rD2[15:0], dram_rdata_raw[15:0]} :
                                 32'b0;
 
     assign dram_wdata = (dram_sel == `DRAM_W_8) ? write_byte :

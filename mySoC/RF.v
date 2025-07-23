@@ -12,6 +12,13 @@ module RF (
     input   wire rf_sel,
 
     input   wire wb_ena,
+    input   wire  [4:0]   wb_reg,
+
+    // use for load-use harzard,
+    // to get write back data at MEM stage
+    // since we need to support byte/half-word
+    input   wire  [4:0]   ID_wb_reg,
+    output  wire  [31:0]  ID_wb_reg_value,
 
     // possible wD
     input   wire  [2:0]   wD_sel,
@@ -25,7 +32,6 @@ module RF (
 
 `ifdef RUN_TRACE
     ,// Debug Interface
-    output wire [ 4:0]  debug_wb_reg,
     output wire [31:0]  debug_wb_value
 `endif
 );
@@ -38,7 +44,7 @@ module RF (
     wire [4:0] reg2 = inst1[14:10];  // rk
     wire [4:0] reg3 = inst1[4:0];    // rd
 
-    
+    assign ID_wb_reg_value = register[ID_wb_reg];
 
     // read operation is non-block
     // read out the register1
@@ -51,8 +57,8 @@ module RF (
 
     // write operation is blocked
     // write the dst register
-    wire [4:0] wb_reg = (wD_sel != `WD_PC4_R1) ? inst2[4:0] :
-                    5'b00001;
+    // wire [4:0] wb_reg = (wD_sel != `WD_PC4_R1) ? inst2[4:0] :
+    //                 5'b00001;
 
     wire [31:0] wb_value = 
                         (wD_sel == `WD_ALU) ? alu_c :
@@ -79,7 +85,7 @@ module RF (
     end
 
 `ifdef RUN_TRACE
-    assign debug_wb_reg = wb_reg;
+    // assign debug_wb_reg = wb_reg;
     assign debug_wb_value = wb_value;
 `endif
 
