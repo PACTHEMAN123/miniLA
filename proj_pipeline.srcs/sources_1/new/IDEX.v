@@ -4,8 +4,12 @@ module IDEX (
     input wire rst,
     input wire clk,
 
+    input wire flush,
+
     // signal
     // todo
+    input wire sext2_sel_in,
+    output reg sext2_sel_out,
     input wire [1:0] npc_op_in,
     output reg [1:0] npc_op_out,
     input wire [2:0] wD_sel_in,
@@ -20,6 +24,12 @@ module IDEX (
     output reg [3:0] alu_op_out,
     input wire [1:0] addr_mode_in,
     output reg [1:0] addr_mode_out,
+    input wire       have_inst_in,
+    output reg       have_inst_out,
+    input wire [4:0] wb_reg_in,
+    output reg [4:0] wb_reg_out,
+    input wire [31:0] wb_reg_value_in,
+    output reg [31:0] wb_reg_value_out,
 
     // modules
     input wire [31:0] inst_in,
@@ -59,7 +69,35 @@ module IDEX (
             zext_out <= 0;
             pc_out <= 0;
             pc4_out <= 0;
-        end else begin
+            have_inst_out <= 0;
+            wb_reg_out <= 0;
+            wb_reg_value_out <= 0;
+            sext2_sel_out <= 0;
+        end 
+        
+        else if (flush) begin
+            npc_op_out <= 0;
+            wD_sel_out <= 0;
+            wb_ena_out <= 0;
+            dram_sel_out <= 0;
+            alu_sel_out <= 0;
+            alu_op_out <= 0;
+            addr_mode_out <= 0;
+            inst_out <= 0;
+            sext1_out <= 0;
+            rf_rD1_out <= 0;
+            rf_rD2_out <= 0;
+            zext_out <= 0;
+            pc_out <= 0;
+            pc4_out <= 0;
+            have_inst_out <= 0;
+            wb_reg_out <= 0;
+            wb_reg_value_out <= 0;
+            sext2_sel_out <= 0;
+        end
+        
+        
+        else begin
             npc_op_out <= npc_op_in;
             wD_sel_out <= wD_sel_in;
             wb_ena_out <= wb_ena_in;
@@ -74,6 +112,10 @@ module IDEX (
             zext_out <= zext_in;
             pc_out <= pc_in;
             pc4_out <= pc4_in;
+            have_inst_out <= have_inst_in;
+            wb_reg_out <= wb_reg_in;
+            wb_reg_value_out <= wb_reg_value_in;
+            sext2_sel_out <= sext2_sel_in;
         end
     end
     

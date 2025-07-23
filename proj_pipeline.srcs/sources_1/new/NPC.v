@@ -5,6 +5,8 @@ module NPC (
     input   wire          br,
     input   wire  [31:0]  pc,
 
+    input   wire  [31:0]  EX_pc,
+
     // possible offset
     input   wire  [31:0]  alu_c,
     input   wire  [31:0]  sext,
@@ -20,8 +22,8 @@ module NPC (
     assign pc4 = pc + 4;
 
     assign npc =    (npc_op == `NPC_PC_4) ? pc + 4 :
-                    (npc_op == `NPC_PC_OFF) ? pc + sext :
-                    (npc_op == `NPC_PC_OFF_BR) ? (br ? pc + sext : pc + 4) :
+                    (npc_op == `NPC_PC_OFF) ? EX_pc + sext :
+                    (npc_op == `NPC_PC_OFF_BR) ? (br ? EX_pc + sext : pc + 4) :
                     (npc_op == `NPC_OFF) ? alu_c :
                     32'b0;
 

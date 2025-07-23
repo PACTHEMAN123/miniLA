@@ -16,25 +16,25 @@ module DigLEDs #(
     reg [2:0] idx;
 
     always @(*) begin
-        dig_en <= 8'b1 << idx;
+        dig_en = 8'b1 << idx;
         case (data[(idx * 4) +: 4])
-            4'h0: dig_dn <= 8'b0011_1111;
-            4'h1: dig_dn <= 8'b0000_0110;
-            4'h2: dig_dn <= 8'b0101_1011;
-            4'h3: dig_dn <= 8'b0100_1111;
-            4'h4: dig_dn <= 8'b0110_0110;
-            4'h5: dig_dn <= 8'b0110_1101;
-            4'h6: dig_dn <= 8'b0111_1101;
-            4'h7: dig_dn <= 8'b0000_0111;
-            4'h8: dig_dn <= 8'b0111_1111;
-            4'h9: dig_dn <= 8'b0110_1111;
-            4'hA: dig_dn <= 8'b0111_0111;
-            4'hB: dig_dn <= 8'b0111_1100;
-            4'hC: dig_dn <= 8'b0011_1001;
-            4'hD: dig_dn <= 8'b0101_1110;
-            4'hE: dig_dn <= 8'b0111_1001;
-            4'hF: dig_dn <= 8'b0111_0001;
-            default: dig_dn <= 8'b0000_0000;
+            4'h0: dig_dn = 8'b0011_1111;
+            4'h1: dig_dn = 8'b0000_0110;
+            4'h2: dig_dn = 8'b0101_1011;
+            4'h3: dig_dn = 8'b0100_1111;
+            4'h4: dig_dn = 8'b0110_0110;
+            4'h5: dig_dn = 8'b0110_1101;
+            4'h6: dig_dn = 8'b0111_1101;
+            4'h7: dig_dn = 8'b0000_0111;
+            4'h8: dig_dn = 8'b0111_1111;
+            4'h9: dig_dn = 8'b0110_1111;
+            4'hA: dig_dn = 8'b0111_0111;
+            4'hB: dig_dn = 8'b0111_1100;
+            4'hC: dig_dn = 8'b0011_1001;
+            4'hD: dig_dn = 8'b0101_1110;
+            4'hE: dig_dn = 8'b0111_1001;
+            4'hF: dig_dn = 8'b0111_0001;
+            default: dig_dn = 8'b0000_0000;
         endcase
     end
 

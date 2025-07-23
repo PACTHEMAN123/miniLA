@@ -15,8 +15,8 @@ module Timer (
 
     always @(*) begin
         case (timer_addr[2:0])
-            3'b000: timer_wdata <= value;
-            default: timer_wdata <= 32'hffffffff;
+            3'b000: timer_wdata = value;
+            default: timer_wdata = 32'hffffffff;
         endcase
     end
 

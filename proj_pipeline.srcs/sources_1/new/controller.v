@@ -15,6 +15,8 @@ module Controller (
     // RF control signals
     output wire rf_sel,
     output wire [2:0] wD_sel,
+    output wire read1,
+    output wire read2,
 
     // sext1 control signals
     output wire [2:0] sext1_op,
@@ -26,9 +28,11 @@ module Controller (
     output wire [1:0] dram_sel,
     output wire [1:0] addr_mode,
 
-    output wire wb_ena
+    output wire wb_ena,
+    output wire have_inst
 );
 
+    
 
     wire [5:0] opcode1 = inst[31:26];
     wire opcode2 = inst[25];
@@ -160,4 +164,21 @@ module Controller (
                         2'b00;
 
     assign wb_ena = !(STB | STH | STW | BEQ | BNE | BLT | BLTU | BGE | BGEU | B);
+
+    assign have_inst = (ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
+                    | SLLIW | SRLIW | SRAIW
+                    | ADDIW | ANDI | ORI | XORI | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW
+                    | LU12IW | PCADDU | 
+                    | BEQ | BNE | BLT | BLTU | BGE | BGEU | JIRL
+                    | B | BL);
+
+    assign read1 = (ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
+                    | SLLIW | SRLIW | SRAIW
+                    | ADDIW | ANDI | ORI | XORI | SLTI | SLTUI | LDB | LDBU | LDH | LDHU | LDW | STB | STH | STW
+                    | BEQ | BNE | BLT | BLTU | BGE | BGEU | JIRL);
+
+    assign read2 = (ADDW | SUBW | AND | OR | XOR | SLLW | SRLW | SRAW | SLT | SLTU
+                    | STB | STH | STW
+                    | BEQ | BNE | BLT | BLTU | BGE | BGEU);
+
 endmodule

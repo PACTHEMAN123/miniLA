@@ -3,7 +3,7 @@
 `include "defines.vh"
 
 module miniLA_SoC (
-    input  wire         fpga_rstn,   // Low active
+    input  wire         fpga_rst,   // Low active
     input  wire         fpga_clk,
 
     input  wire [15:0]  sw,
@@ -130,7 +130,7 @@ module miniLA_SoC (
 `endif
     
     myCPU Core_cpu (
-        .cpu_rst            (!fpga_rstn),
+        .cpu_rst            (fpga_rst),
         .cpu_clk            (cpu_clk),
 
         // Interface to IROM
