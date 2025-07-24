@@ -1,5 +1,5 @@
 // Annotate this macro before synthesis
-`define RUN_TRACE
+//`define RUN_TRACE
 
 // TODO: 在此处定义你的宏
 // NPC control signals
